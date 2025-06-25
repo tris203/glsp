@@ -11,6 +11,6 @@ type JSONRPCLogger struct {
 }
 
 // ([jsonrpc2.Logger] interface)
-func (self *JSONRPCLogger) Printf(format string, v ...any) {
-	self.log.Debugf(strings.TrimSuffix(format, "\n"), v...)
+func (l *JSONRPCLogger) Printf(format string, v ...any) {
+	l.log.Debugf(strings.TrimSuffix(format, "\n"), v...)
 }

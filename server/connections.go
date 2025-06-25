@@ -10,29 +10,29 @@ import (
 	"github.com/tliron/commonlog"
 )
 
-func (self *Server) newStreamConnection(stream io.ReadWriteCloser) *jsonrpc2.Conn {
-	handler := self.newHandler()
-	connectionOptions := self.newConnectionOptions()
+func (s *Server) newStreamConnection(stream io.ReadWriteCloser) *jsonrpc2.Conn {
+	handler := s.newHandler()
+	connectionOptions := s.newConnectionOptions()
 
-	context, cancel := contextpkg.WithTimeout(contextpkg.Background(), self.StreamTimeout)
+	context, cancel := contextpkg.WithTimeout(contextpkg.Background(), s.StreamTimeout)
 	defer cancel()
 
 	return jsonrpc2.NewConn(context, jsonrpc2.NewBufferedStream(stream, jsonrpc2.VSCodeObjectCodec{}), handler, connectionOptions...)
 }
 
-func (self *Server) newWebSocketConnection(socket *websocket.Conn) *jsonrpc2.Conn {
-	handler := self.newHandler()
-	connectionOptions := self.newConnectionOptions()
+func (s *Server) newWebSocketConnection(socket *websocket.Conn) *jsonrpc2.Conn {
+	handler := s.newHandler()
+	connectionOptions := s.newConnectionOptions()
 
-	context, cancel := contextpkg.WithTimeout(contextpkg.Background(), self.WebSocketTimeout)
+	context, cancel := contextpkg.WithTimeout(contextpkg.Background(), s.WebSocketTimeout)
 	defer cancel()
 
 	return jsonrpc2.NewConn(context, wsjsonrpc2.NewObjectStream(socket), handler, connectionOptions...)
 }
 
-func (self *Server) newConnectionOptions() []jsonrpc2.ConnOpt {
-	if self.Debug {
-		log := commonlog.NewScopeLogger(self.Log, "rpc")
+func (s *Server) newConnectionOptions() []jsonrpc2.ConnOpt {
+	if s.Debug {
+		log := commonlog.NewScopeLogger(s.Log, "rpc")
 		return []jsonrpc2.ConnOpt{jsonrpc2.LogMessages(&JSONRPCLogger{log})}
 	} else {
 		return nil
