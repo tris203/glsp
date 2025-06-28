@@ -6,7 +6,7 @@ import (
 )
 
 func (self *Server) RunStdio() error {
-	self.Log.Notice("reading from stdin, writing to stdout")
+	self.Log.Info("reading from stdin, writing to stdout")
 	self.ServeStream(Stdio{}, nil)
 	return nil
 }
