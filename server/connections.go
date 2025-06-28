@@ -1,7 +1,7 @@
 package server
 
 import (
-	contextpkg "context"
+	"context"
 	"io"
 
 	"github.com/gorilla/websocket"
@@ -13,7 +13,7 @@ func (self *Server) newStreamConnection(stream io.ReadWriteCloser) *jsonrpc2.Con
 	handler := self.newHandler()
 	connectionOptions := self.newConnectionOptions()
 
-	context, cancel := contextpkg.WithTimeout(contextpkg.Background(), self.StreamTimeout)
+	context, cancel := context.WithTimeout(context.Background(), self.StreamTimeout)
 	defer cancel()
 
 	return jsonrpc2.NewConn(context, jsonrpc2.NewBufferedStream(stream, jsonrpc2.VSCodeObjectCodec{}), handler, connectionOptions...)
@@ -23,7 +23,7 @@ func (self *Server) newWebSocketConnection(socket *websocket.Conn) *jsonrpc2.Con
 	handler := self.newHandler()
 	connectionOptions := self.newConnectionOptions()
 
-	context, cancel := contextpkg.WithTimeout(contextpkg.Background(), self.WebSocketTimeout)
+	context, cancel := context.WithTimeout(context.Background(), self.WebSocketTimeout)
 	defer cancel()
 
 	return jsonrpc2.NewConn(context, wsjsonrpc2.NewObjectStream(socket), handler, connectionOptions...)

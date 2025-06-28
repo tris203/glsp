@@ -1,7 +1,7 @@
 package server
 
 import (
-	contextpkg "context"
+	"context"
 	"fmt"
 
 	"github.com/sourcegraph/jsonrpc2"
@@ -14,7 +14,7 @@ func (self *Server) newHandler() jsonrpc2.Handler {
 	return jsonrpc2.HandlerWithError(self.handle)
 }
 
-func (self *Server) handle(context contextpkg.Context, connection *jsonrpc2.Conn, request *jsonrpc2.Request) (any, error) {
+func (self *Server) handle(context context.Context, connection *jsonrpc2.Conn, request *jsonrpc2.Request) (any, error) {
 	glspContext := glsp.Context{
 		Method: request.Method,
 		Notify: func(method string, params any) {
