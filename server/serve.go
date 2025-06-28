@@ -2,14 +2,14 @@ package server
 
 import (
 	"io"
+	"log/slog"
 
 	"github.com/gorilla/websocket"
-	"github.com/tliron/commonlog"
 )
 
 // See: https://github.com/sourcegraph/go-langserver/blob/master/main.go#L179
 
-func (self *Server) ServeStream(stream io.ReadWriteCloser, log commonlog.Logger) {
+func (self *Server) ServeStream(stream io.ReadWriteCloser, log *slog.Logger) {
 	if log == nil {
 		log = self.Log
 	}
@@ -18,7 +18,7 @@ func (self *Server) ServeStream(stream io.ReadWriteCloser, log commonlog.Logger)
 	log.Info("stream connection closed")
 }
 
-func (self *Server) ServeWebSocket(socket *websocket.Conn, log commonlog.Logger) {
+func (self *Server) ServeWebSocket(socket *websocket.Conn, log *slog.Logger) {
 	if log == nil {
 		log = self.Log
 	}

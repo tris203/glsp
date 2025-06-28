@@ -7,7 +7,6 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/sourcegraph/jsonrpc2"
 	wsjsonrpc2 "github.com/sourcegraph/jsonrpc2/websocket"
-	"github.com/tliron/commonlog"
 )
 
 func (self *Server) newStreamConnection(stream io.ReadWriteCloser) *jsonrpc2.Conn {
@@ -32,7 +31,7 @@ func (self *Server) newWebSocketConnection(socket *websocket.Conn) *jsonrpc2.Con
 
 func (self *Server) newConnectionOptions() []jsonrpc2.ConnOpt {
 	if self.Debug {
-		log := commonlog.NewScopeLogger(self.Log, "rpc")
+		log := self.Log.With("scope", "rpc")
 		return []jsonrpc2.ConnOpt{jsonrpc2.LogMessages(&JSONRPCLogger{log})}
 	} else {
 		return nil

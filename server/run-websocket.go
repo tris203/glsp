@@ -6,7 +6,6 @@ import (
 
 	"github.com/gorilla/websocket"
 	"github.com/pkg/errors"
-	"github.com/tliron/commonlog"
 )
 
 func (self *Server) RunWebSocket(address string) error {
@@ -18,13 +17,18 @@ func (self *Server) RunWebSocket(address string) error {
 	mux.HandleFunc("/", func(writer http.ResponseWriter, request *http.Request) {
 		connection, err := upgrader.Upgrade(writer, request, nil)
 		if err != nil {
-			self.Log.Warningf("error upgrading HTTP to web socket: %s", err.Error())
+			self.Log.Warn("error upgrading HTTP to web socket: %s", "error", err.Error())
 			http.Error(writer, errors.Wrap(err, "could not upgrade to web socket").Error(), http.StatusBadRequest)
 			return
 		}
 
-		log := commonlog.NewKeyValueLogger(self.Log, "id", atomic.AddUint64(&connectionCount, 1))
-		defer commonlog.CallAndLogError(connection.Close, "connection.Close", log)
+		log := self.Log.With("id", atomic.AddUint64(&connectionCount, 1))
+		defer func() {
+			err := connection.Close()
+			if err != nil {
+				log.Error("error closing web socket connection", "error", err.Error())
+			}
+		}()
 		self.ServeWebSocket(connection, log)
 	})
 
@@ -39,7 +43,7 @@ func (self *Server) RunWebSocket(address string) error {
 		WriteTimeout: self.WriteTimeout,
 	}
 
-	self.Log.Notice("listening for web socket connections", "address", address)
+	self.Log.Info("listening for web socket connections", "address", address)
 	err = server.Serve(*listener)
 	return errors.Wrap(err, "WebSocket")
 }
