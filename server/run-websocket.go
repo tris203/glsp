@@ -1,11 +1,11 @@
 package server
 
 import (
+	"fmt"
 	"net/http"
 	"sync/atomic"
 
 	"github.com/gorilla/websocket"
-	"github.com/pkg/errors"
 )
 
 func (self *Server) RunWebSocket(address string) error {
@@ -18,7 +18,7 @@ func (self *Server) RunWebSocket(address string) error {
 		connection, err := upgrader.Upgrade(writer, request, nil)
 		if err != nil {
 			self.Log.Warn("error upgrading HTTP to web socket: %s", "error", err.Error())
-			http.Error(writer, errors.Wrap(err, "could not upgrade to web socket").Error(), http.StatusBadRequest)
+			http.Error(writer, fmt.Errorf("could not upgrade to web socket: %w", err).Error(), http.StatusBadRequest)
 			return
 		}
 
@@ -45,5 +45,5 @@ func (self *Server) RunWebSocket(address string) error {
 
 	self.Log.Info("listening for web socket connections", "address", address)
 	err = server.Serve(*listener)
-	return errors.Wrap(err, "WebSocket")
+	return fmt.Errorf("web socket server stopped: %w", err)
 }
