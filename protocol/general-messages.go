@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/tliron/glsp"
+	"slices"
 )
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#initialize
@@ -11,9 +12,9 @@ import (
 const MethodInitialize = Method("initialize")
 
 // Returns: InitializeResult | InitializeError
-type InitializeFunc func(context *glsp.Context, params *InitializeParams) (any, error)
+type InitializeFunc[P InitializeParams_316 | InitializeParams_317, R InitializeResult_316 | InitializeResult_317] func(context *glsp.Context, params *P) (*R, error)
 
-type InitializeParams struct {
+type InitializeParams_316 struct {
 	WorkDoneProgressParams
 
 	/**
@@ -78,7 +79,7 @@ type InitializeParams struct {
 	/**
 	 * The capabilities provided by the client (editor or tool)
 	 */
-	Capabilities ClientCapabilities `json:"capabilities"`
+	Capabilities ClientCapabilities_317 `json:"capabilities"`
 
 	/**
 	 * The initial trace setting. If omitted trace is disabled ('off').
@@ -99,7 +100,7 @@ type InitializeParams struct {
 /**
  * Text document specific client capabilities.
  */
-type TextDocumentClientCapabilities struct {
+type TextDocumentClientCapabilities_316 struct {
 	Synchronization *TextDocumentSyncClientCapabilities `json:"synchronization,omitempty"`
 
 	/**
@@ -250,7 +251,7 @@ type TextDocumentClientCapabilities struct {
 	Moniker *MonikerClientCapabilities `json:"moniker,omitempty"`
 }
 
-type ClientCapabilities struct {
+type ClientCapabilities_316 struct {
 	/**
 	 * Workspace specific client capabilities.
 	 */
@@ -366,7 +367,7 @@ type ClientCapabilities struct {
 	/**
 	 * Text document specific client capabilities.
 	 */
-	TextDocument *TextDocumentClientCapabilities `json:"textDocument,omitempty"`
+	TextDocument *TextDocumentClientCapabilities_317 `json:"textDocument,omitempty"`
 
 	/**
 	 * Window specific client capabilities.
@@ -423,28 +424,23 @@ type ClientCapabilities struct {
 	Experimental any `json:"experimental,omitempty"`
 }
 
-func (self *ClientCapabilities) SupportsSymbolKind(kind SymbolKind) bool {
+func (h *ClientCapabilities_317) SupportsSymbolKind(kind SymbolKind) bool {
 	var kinds []SymbolKind
-	if (self.TextDocument != nil) && (self.TextDocument.DocumentSymbol != nil) && (self.TextDocument.DocumentSymbol.SymbolKind != nil) {
-		kinds = self.TextDocument.DocumentSymbol.SymbolKind.ValueSet
+	if (h.TextDocument != nil) && (h.TextDocument.DocumentSymbol != nil) && (h.TextDocument.DocumentSymbol.SymbolKind != nil) {
+		kinds = h.TextDocument.DocumentSymbol.SymbolKind.ValueSet
 	}
 	if kinds == nil {
 		return kind <= 19
 	} else {
-		for _, kind_ := range kinds {
-			if kind == kind_ {
-				return true
-			}
-		}
-		return false
+		return slices.Contains(kinds, kind)
 	}
 }
 
-type InitializeResult struct {
+type InitializeResult_316 struct {
 	/**
 	 * The capabilities the language server provides.
 	 */
-	Capabilities ServerCapabilities `json:"capabilities"`
+	Capabilities ServerCapabilities_316 `json:"capabilities"`
 
 	/**
 	 * Information about the server.
@@ -492,7 +488,7 @@ type InitializeError struct {
 	Retry bool `json:"retry"`
 }
 
-type ServerCapabilities struct {
+type ServerCapabilities_316 struct {
 	/**
 	 * Defines how text documents are synced. Is either a detailed structure
 	 * defining each notification or for backwards compatibility the
@@ -719,7 +715,7 @@ type ServerCapabilitiesWorkspaceFileOperations struct {
 }
 
 // ([json.Unmarshaler] interface)
-func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
+func (s *ServerCapabilities_316) UnmarshalJSON(data []byte) error {
 	var value struct {
 		TextDocumentSync                 json.RawMessage                  `json:"textDocumentSync,omitempty"` // nil | TextDocumentSyncOptions | TextDocumentSyncKind
 		CompletionProvider               *CompletionOptions               `json:"completionProvider,omitempty"`
@@ -753,22 +749,22 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 	}
 
 	if err := json.Unmarshal(data, &value); err == nil {
-		self.CompletionProvider = value.CompletionProvider
-		self.SignatureHelpProvider = value.SignatureHelpProvider
-		self.CodeLensProvider = value.CodeLensProvider
-		self.DocumentLinkProvider = value.DocumentLinkProvider
-		self.DocumentOnTypeFormattingProvider = value.DocumentOnTypeFormattingProvider
-		self.ExecuteCommandProvider = value.ExecuteCommandProvider
-		self.Workspace = value.Workspace
+		s.CompletionProvider = value.CompletionProvider
+		s.SignatureHelpProvider = value.SignatureHelpProvider
+		s.CodeLensProvider = value.CodeLensProvider
+		s.DocumentLinkProvider = value.DocumentLinkProvider
+		s.DocumentOnTypeFormattingProvider = value.DocumentOnTypeFormattingProvider
+		s.ExecuteCommandProvider = value.ExecuteCommandProvider
+		s.Workspace = value.Workspace
 
 		if value.TextDocumentSync != nil {
 			var value_ TextDocumentSyncOptions
 			if err = json.Unmarshal(value.TextDocumentSync, &value_); err == nil {
-				self.TextDocumentSync = value_
+				s.TextDocumentSync = value_
 			} else {
 				var value_ TextDocumentSyncKind
 				if err = json.Unmarshal(value.TextDocumentSync, &value_); err == nil {
-					self.TextDocumentSync = value_
+					s.TextDocumentSync = value_
 				} else {
 					return err
 				}
@@ -778,11 +774,11 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.HoverProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.HoverProvider, &value_); err == nil {
-				self.HoverProvider = value_
+				s.HoverProvider = value_
 			} else {
 				var value_ HoverOptions
 				if err = json.Unmarshal(value.HoverProvider, &value_); err == nil {
-					self.HoverProvider = value_
+					s.HoverProvider = value_
 				} else {
 					return err
 				}
@@ -792,15 +788,15 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.DeclarationProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.DeclarationProvider, &value_); err == nil {
-				self.DeclarationProvider = value_
+				s.DeclarationProvider = value_
 			} else {
 				var value_ DeclarationOptions
 				if err = json.Unmarshal(value.DeclarationProvider, &value_); err == nil {
-					self.DeclarationProvider = value_
+					s.DeclarationProvider = value_
 				} else {
 					var value_ DeclarationRegistrationOptions
 					if err = json.Unmarshal(value.DeclarationProvider, &value_); err == nil {
-						self.DeclarationProvider = value_
+						s.DeclarationProvider = value_
 					} else {
 						return err
 					}
@@ -811,11 +807,11 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.DefinitionProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.DefinitionProvider, &value_); err == nil {
-				self.DefinitionProvider = value_
+				s.DefinitionProvider = value_
 			} else {
 				var value_ DefinitionOptions
 				if err = json.Unmarshal(value.DefinitionProvider, &value_); err == nil {
-					self.DefinitionProvider = value_
+					s.DefinitionProvider = value_
 				} else {
 					return err
 				}
@@ -825,15 +821,15 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.TypeDefinitionProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.TypeDefinitionProvider, &value_); err == nil {
-				self.TypeDefinitionProvider = value_
+				s.TypeDefinitionProvider = value_
 			} else {
 				var value_ TypeDefinitionOptions
 				if err = json.Unmarshal(value.TypeDefinitionProvider, &value_); err == nil {
-					self.TypeDefinitionProvider = value_
+					s.TypeDefinitionProvider = value_
 				} else {
 					var value_ TypeDefinitionRegistrationOptions
 					if err = json.Unmarshal(value.TypeDefinitionProvider, &value_); err == nil {
-						self.TypeDefinitionProvider = value_
+						s.TypeDefinitionProvider = value_
 					} else {
 						return err
 					}
@@ -844,15 +840,15 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.ImplementationProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.ImplementationProvider, &value_); err == nil {
-				self.ImplementationProvider = value_
+				s.ImplementationProvider = value_
 			} else {
 				var value_ ImplementationOptions
 				if err = json.Unmarshal(value.ImplementationProvider, &value_); err == nil {
-					self.ImplementationProvider = value_
+					s.ImplementationProvider = value_
 				} else {
 					var value_ ImplementationRegistrationOptions
 					if err = json.Unmarshal(value.ImplementationProvider, &value_); err == nil {
-						self.ImplementationProvider = value_
+						s.ImplementationProvider = value_
 					} else {
 						return err
 					}
@@ -863,11 +859,11 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.ReferencesProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.ReferencesProvider, &value_); err == nil {
-				self.ReferencesProvider = value_
+				s.ReferencesProvider = value_
 			} else {
 				var value_ ReferenceOptions
 				if err = json.Unmarshal(value.ReferencesProvider, &value_); err == nil {
-					self.ReferencesProvider = value_
+					s.ReferencesProvider = value_
 				} else {
 					return err
 				}
@@ -877,11 +873,11 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.DocumentHighlightProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.DocumentHighlightProvider, &value_); err == nil {
-				self.DocumentHighlightProvider = value_
+				s.DocumentHighlightProvider = value_
 			} else {
 				var value_ DocumentHighlightOptions
 				if err = json.Unmarshal(value.DocumentHighlightProvider, &value_); err == nil {
-					self.DocumentHighlightProvider = value_
+					s.DocumentHighlightProvider = value_
 				} else {
 					return err
 				}
@@ -891,11 +887,11 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.DocumentSymbolProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.DocumentSymbolProvider, &value_); err == nil {
-				self.DocumentSymbolProvider = value_
+				s.DocumentSymbolProvider = value_
 			} else {
 				var value_ DocumentSymbolOptions
 				if err = json.Unmarshal(value.DocumentSymbolProvider, &value_); err == nil {
-					self.DocumentSymbolProvider = value_
+					s.DocumentSymbolProvider = value_
 				} else {
 					return err
 				}
@@ -905,11 +901,11 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.CodeActionProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.CodeActionProvider, &value_); err == nil {
-				self.CodeActionProvider = value_
+				s.CodeActionProvider = value_
 			} else {
 				var value_ CodeActionOptions
 				if err = json.Unmarshal(value.CodeActionProvider, &value_); err == nil {
-					self.CodeActionProvider = value_
+					s.CodeActionProvider = value_
 				} else {
 					return err
 				}
@@ -919,15 +915,15 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.ColorProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.ColorProvider, &value_); err == nil {
-				self.ColorProvider = value_
+				s.ColorProvider = value_
 			} else {
 				var value_ DocumentColorOptions
 				if err = json.Unmarshal(value.ColorProvider, &value_); err == nil {
-					self.ColorProvider = value_
+					s.ColorProvider = value_
 				} else {
 					var value_ DocumentColorRegistrationOptions
 					if err = json.Unmarshal(value.ColorProvider, &value_); err == nil {
-						self.ColorProvider = value_
+						s.ColorProvider = value_
 					} else {
 						return err
 					}
@@ -938,11 +934,11 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.DocumentFormattingProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.DocumentFormattingProvider, &value_); err == nil {
-				self.DocumentFormattingProvider = value_
+				s.DocumentFormattingProvider = value_
 			} else {
 				var value_ DocumentFormattingOptions
 				if err = json.Unmarshal(value.DocumentFormattingProvider, &value_); err == nil {
-					self.DocumentFormattingProvider = value_
+					s.DocumentFormattingProvider = value_
 				} else {
 					return err
 				}
@@ -952,11 +948,11 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.DocumentRangeFormattingProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.DocumentRangeFormattingProvider, &value_); err == nil {
-				self.DocumentRangeFormattingProvider = value_
+				s.DocumentRangeFormattingProvider = value_
 			} else {
 				var value_ DocumentRangeFormattingOptions
 				if err = json.Unmarshal(value.DocumentRangeFormattingProvider, &value_); err == nil {
-					self.DocumentRangeFormattingProvider = value_
+					s.DocumentRangeFormattingProvider = value_
 				} else {
 					return err
 				}
@@ -966,11 +962,11 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.RenameProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.RenameProvider, &value_); err == nil {
-				self.RenameProvider = value_
+				s.RenameProvider = value_
 			} else {
 				var value_ RenameOptions
 				if err = json.Unmarshal(value.RenameProvider, &value_); err == nil {
-					self.RenameProvider = value_
+					s.RenameProvider = value_
 				} else {
 					return err
 				}
@@ -980,15 +976,15 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.FoldingRangeProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.FoldingRangeProvider, &value_); err == nil {
-				self.FoldingRangeProvider = value_
+				s.FoldingRangeProvider = value_
 			} else {
 				var value_ FoldingRangeOptions
 				if err = json.Unmarshal(value.FoldingRangeProvider, &value_); err == nil {
-					self.FoldingRangeProvider = value_
+					s.FoldingRangeProvider = value_
 				} else {
 					var value_ FoldingRangeRegistrationOptions
 					if err = json.Unmarshal(value.FoldingRangeProvider, &value_); err == nil {
-						self.FoldingRangeProvider = value_
+						s.FoldingRangeProvider = value_
 					} else {
 						return err
 					}
@@ -999,15 +995,15 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.SelectionRangeProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.SelectionRangeProvider, &value_); err == nil {
-				self.SelectionRangeProvider = value_
+				s.SelectionRangeProvider = value_
 			} else {
 				var value_ SelectionRangeOptions
 				if err = json.Unmarshal(value.SelectionRangeProvider, &value_); err == nil {
-					self.SelectionRangeProvider = value_
+					s.SelectionRangeProvider = value_
 				} else {
 					var value_ SelectionRangeRegistrationOptions
 					if err = json.Unmarshal(value.SelectionRangeProvider, &value_); err == nil {
-						self.SelectionRangeProvider = value_
+						s.SelectionRangeProvider = value_
 					} else {
 						return err
 					}
@@ -1018,15 +1014,15 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.LinkedEditingRangeProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.LinkedEditingRangeProvider, &value_); err == nil {
-				self.LinkedEditingRangeProvider = value_
+				s.LinkedEditingRangeProvider = value_
 			} else {
 				var value_ LinkedEditingRangeOptions
 				if err = json.Unmarshal(value.LinkedEditingRangeProvider, &value_); err == nil {
-					self.LinkedEditingRangeProvider = value_
+					s.LinkedEditingRangeProvider = value_
 				} else {
 					var value_ LinkedEditingRangeRegistrationOptions
 					if err = json.Unmarshal(value.LinkedEditingRangeProvider, &value_); err == nil {
-						self.LinkedEditingRangeProvider = value_
+						s.LinkedEditingRangeProvider = value_
 					} else {
 						return err
 					}
@@ -1037,15 +1033,15 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.CallHierarchyProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.CallHierarchyProvider, &value_); err == nil {
-				self.CallHierarchyProvider = value_
+				s.CallHierarchyProvider = value_
 			} else {
 				var value_ CallHierarchyOptions
 				if err = json.Unmarshal(value.CallHierarchyProvider, &value_); err == nil {
-					self.CallHierarchyProvider = value_
+					s.CallHierarchyProvider = value_
 				} else {
 					var value_ CallHierarchyRegistrationOptions
 					if err = json.Unmarshal(value.CallHierarchyProvider, &value_); err == nil {
-						self.CallHierarchyProvider = value_
+						s.CallHierarchyProvider = value_
 					} else {
 						return err
 					}
@@ -1056,11 +1052,11 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.SemanticTokensProvider != nil {
 			var value_ SemanticTokensOptions
 			if err = json.Unmarshal(value.SemanticTokensProvider, &value_); err == nil {
-				self.SemanticTokensProvider = value_
+				s.SemanticTokensProvider = value_
 			} else {
 				var value_ SemanticTokensRegistrationOptions
 				if err = json.Unmarshal(value.SemanticTokensProvider, &value_); err == nil {
-					self.SemanticTokensProvider = value_
+					s.SemanticTokensProvider = value_
 				} else {
 					return err
 				}
@@ -1070,15 +1066,15 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.MonikerProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.MonikerProvider, &value_); err == nil {
-				self.MonikerProvider = value_
+				s.MonikerProvider = value_
 			} else {
 				var value_ MonikerOptions
 				if err = json.Unmarshal(value.MonikerProvider, &value_); err == nil {
-					self.MonikerProvider = value_
+					s.MonikerProvider = value_
 				} else {
 					var value_ MonikerRegistrationOptions
 					if err = json.Unmarshal(value.MonikerProvider, &value_); err == nil {
-						self.MonikerProvider = value_
+						s.MonikerProvider = value_
 					} else {
 						return err
 					}
@@ -1089,11 +1085,11 @@ func (self *ServerCapabilities) UnmarshalJSON(data []byte) error {
 		if value.WorkspaceSymbolProvider != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.WorkspaceSymbolProvider, &value_); err == nil {
-				self.WorkspaceSymbolProvider = value_
+				s.WorkspaceSymbolProvider = value_
 			} else {
 				var value_ WorkspaceSymbolOptions
 				if err = json.Unmarshal(value.WorkspaceSymbolProvider, &value_); err == nil {
-					self.WorkspaceSymbolProvider = value_
+					s.WorkspaceSymbolProvider = value_
 				} else {
 					return err
 				}
@@ -1156,4 +1152,462 @@ type SetTraceParams struct {
 	 * The new value that should be assigned to the trace setting.
 	 */
 	Value TraceValue `json:"value"`
+}
+
+// https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#initialize
+
+type InitializeParams_317 struct {
+	InitializeParams_316
+
+	/**
+	 * The capabilities provided by the client (editor or tool)
+	 */
+	Capabilities ClientCapabilities_317 `json:"capabilities"`
+}
+
+type ClientCapabilities_317 struct {
+	ClientCapabilities_316
+
+	TextDocument *TextDocumentClientCapabilities_317 `json:"textDocument,omitempty"`
+}
+
+/**
+ * Text document specific client capabilities.
+ */
+type TextDocumentClientCapabilities_317 struct {
+	TextDocumentClientCapabilities_316
+
+	/**
+	 * Capabilities specific to the diagnostic pull model.
+	 *
+	 * @since 3.17.0
+	 */
+	Diagnostic *DiagnosticClientCapabilities `json:"diagnostic,omitempty"`
+}
+
+type ServerCapabilities_317 struct {
+	ServerCapabilities_316
+
+	/**
+	 * The server has support for pull model diagnostics.
+	 *
+	 * @since 3.17.0
+	 */
+	DiagnosticProvider any `json:"diagnosticProvider,omitempty"` // nil | DiagnosticOptions | DiagnosticRegistrationOptions
+}
+
+func (s *ServerCapabilities_317) UnmarshalJSON(data []byte) error {
+	var value struct {
+		TextDocumentSync                 json.RawMessage                  `json:"textDocumentSync,omitempty"` // nil | TextDocumentSyncOptions | TextDocumentSyncKind
+		CompletionProvider               *CompletionOptions               `json:"completionProvider,omitempty"`
+		HoverProvider                    json.RawMessage                  `json:"hoverProvider,omitempty"` // nil | bool | HoverOptions
+		SignatureHelpProvider            *SignatureHelpOptions            `json:"signatureHelpProvider,omitempty"`
+		DeclarationProvider              json.RawMessage                  `json:"declarationProvider,omitempty"`       // nil | bool | DeclarationOptions | DeclarationRegistrationOptions
+		DefinitionProvider               json.RawMessage                  `json:"definitionProvider,omitempty"`        // nil | bool | DefinitionOptions
+		TypeDefinitionProvider           json.RawMessage                  `json:"typeDefinitionProvider,omitempty"`    // nil | bool | TypeDefinitionOption | TypeDefinitionRegistrationOptions
+		ImplementationProvider           json.RawMessage                  `json:"implementationProvider,omitempty"`    // nil | bool | ImplementationOptions | ImplementationRegistrationOptions
+		ReferencesProvider               json.RawMessage                  `json:"referencesProvider,omitempty"`        // nil | bool | ReferenceOptions
+		DocumentHighlightProvider        json.RawMessage                  `json:"documentHighlightProvider,omitempty"` // nil | bool | DocumentHighlightOptions
+		DocumentSymbolProvider           json.RawMessage                  `json:"documentSymbolProvider,omitempty"`    // nil | bool | DocumentSymbolOptions
+		CodeActionProvider               json.RawMessage                  `json:"codeActionProvider,omitempty"`        // nil | bool | CodeActionOptions
+		CodeLensProvider                 *CodeLensOptions                 `json:"codeLensProvider,omitempty"`
+		DocumentLinkProvider             *DocumentLinkOptions             `json:"documentLinkProvider,omitempty"`
+		ColorProvider                    json.RawMessage                  `json:"colorProvider,omitempty"`                   // nil | bool | DocumentColorOptions | DocumentColorRegistrationOptions
+		DocumentFormattingProvider       json.RawMessage                  `json:"documentFormattingProvider,omitempty"`      // nil | bool | DocumentFormattingOptions
+		DocumentRangeFormattingProvider  json.RawMessage                  `json:"documentRangeFormattingProvider,omitempty"` // nil | bool | DocumentRangeFormattingOptions
+		DocumentOnTypeFormattingProvider *DocumentOnTypeFormattingOptions `json:"documentOnTypeFormattingProvider,omitempty"`
+		RenameProvider                   json.RawMessage                  `json:"renameProvider,omitempty"`       // nil | bool | RenameOptions
+		FoldingRangeProvider             json.RawMessage                  `json:"foldingRangeProvider,omitempty"` // nil | bool | FoldingRangeOptions | FoldingRangeRegistrationOptions
+		ExecuteCommandProvider           *ExecuteCommandOptions           `json:"executeCommandProvider,omitempty"`
+		SelectionRangeProvider           json.RawMessage                  `json:"selectionRangeProvider,omitempty"`     // nil | bool | SelectionRangeOptions | SelectionRangeRegistrationOptions
+		LinkedEditingRangeProvider       json.RawMessage                  `json:"linkedEditingRangeProvider,omitempty"` // nil | bool | LinkedEditingRangeOptions | LinkedEditingRangeRegistrationOptions
+		CallHierarchyProvider            json.RawMessage                  `json:"callHierarchyProvider,omitempty"`      // nil | bool | CallHierarchyOptions | CallHierarchyRegistrationOptions
+		SemanticTokensProvider           json.RawMessage                  `json:"semanticTokensProvider,omitempty"`     // nil | SemanticTokensOptions | SemanticTokensRegistrationOptions
+		MonikerProvider                  json.RawMessage                  `json:"monikerProvider,omitempty"`            // nil | bool | MonikerOptions | MonikerRegistrationOptions
+		WorkspaceSymbolProvider          json.RawMessage                  `json:"workspaceSymbolProvider,omitempty"`    // nil | bool | WorkspaceSymbolOptions
+		Workspace                        *ServerCapabilitiesWorkspace     `json:"workspace,omitempty"`
+		Experimental                     *any                             `json:"experimental,omitempty"`
+		DiagnosticProvider               json.RawMessage                  `json:"diagnosticProvider,omitempty"` // nil | DiagnosticOptions | DiagnosticRegistrationOptions
+	}
+
+	if err := json.Unmarshal(data, &value); err == nil {
+		s.CompletionProvider = value.CompletionProvider
+		s.SignatureHelpProvider = value.SignatureHelpProvider
+		s.CodeLensProvider = value.CodeLensProvider
+		s.DocumentLinkProvider = value.DocumentLinkProvider
+		s.DocumentOnTypeFormattingProvider = value.DocumentOnTypeFormattingProvider
+		s.ExecuteCommandProvider = value.ExecuteCommandProvider
+		s.Workspace = value.Workspace
+
+		if value.TextDocumentSync != nil {
+			var value_ TextDocumentSyncOptions
+			if err = json.Unmarshal(value.TextDocumentSync, &value_); err == nil {
+				s.TextDocumentSync = value_
+			} else {
+				var value_ TextDocumentSyncKind
+				if err = json.Unmarshal(value.TextDocumentSync, &value_); err == nil {
+					s.TextDocumentSync = value_
+				} else {
+					return err
+				}
+			}
+		}
+
+		if value.HoverProvider != nil {
+			var value_ bool
+			if err = json.Unmarshal(value.HoverProvider, &value_); err == nil {
+				s.HoverProvider = value_
+			} else {
+				var value_ HoverOptions
+				if err = json.Unmarshal(value.HoverProvider, &value_); err == nil {
+					s.HoverProvider = value_
+				} else {
+					return err
+				}
+			}
+		}
+
+		if value.DeclarationProvider != nil {
+			var value_ bool
+			if err = json.Unmarshal(value.DeclarationProvider, &value_); err == nil {
+				s.DeclarationProvider = value_
+			} else {
+				var value_ DeclarationOptions
+				if err = json.Unmarshal(value.DeclarationProvider, &value_); err == nil {
+					s.DeclarationProvider = value_
+				} else {
+					var value_ DeclarationRegistrationOptions
+					if err = json.Unmarshal(value.DeclarationProvider, &value_); err == nil {
+						s.DeclarationProvider = value_
+					} else {
+						return err
+					}
+				}
+			}
+		}
+
+		if value.DefinitionProvider != nil {
+			var value_ bool
+			if err = json.Unmarshal(value.DefinitionProvider, &value_); err == nil {
+				s.DefinitionProvider = value_
+			} else {
+				var value_ DefinitionOptions
+				if err = json.Unmarshal(value.DefinitionProvider, &value_); err == nil {
+					s.DefinitionProvider = value_
+				} else {
+					return err
+				}
+			}
+		}
+
+		if value.TypeDefinitionProvider != nil {
+			var value_ bool
+			if err = json.Unmarshal(value.TypeDefinitionProvider, &value_); err == nil {
+				s.TypeDefinitionProvider = value_
+			} else {
+				var value_ TypeDefinitionOptions
+				if err = json.Unmarshal(value.TypeDefinitionProvider, &value_); err == nil {
+					s.TypeDefinitionProvider = value_
+				} else {
+					var value_ TypeDefinitionRegistrationOptions
+					if err = json.Unmarshal(value.TypeDefinitionProvider, &value_); err == nil {
+						s.TypeDefinitionProvider = value_
+					} else {
+						return err
+					}
+				}
+			}
+		}
+
+		if value.ImplementationProvider != nil {
+			var value_ bool
+			if err = json.Unmarshal(value.ImplementationProvider, &value_); err == nil {
+				s.ImplementationProvider = value_
+			} else {
+				var value_ ImplementationOptions
+				if err = json.Unmarshal(value.ImplementationProvider, &value_); err == nil {
+					s.ImplementationProvider = value_
+				} else {
+					var value_ ImplementationRegistrationOptions
+					if err = json.Unmarshal(value.ImplementationProvider, &value_); err == nil {
+						s.ImplementationProvider = value_
+					} else {
+						return err
+					}
+				}
+			}
+		}
+
+		if value.ReferencesProvider != nil {
+			var value_ bool
+			if err = json.Unmarshal(value.ReferencesProvider, &value_); err == nil {
+				s.ReferencesProvider = value_
+			} else {
+				var value_ ReferenceOptions
+				if err = json.Unmarshal(value.ReferencesProvider, &value_); err == nil {
+					s.ReferencesProvider = value_
+				} else {
+					return err
+				}
+			}
+		}
+
+		if value.DocumentHighlightProvider != nil {
+			var value_ bool
+			if err = json.Unmarshal(value.DocumentHighlightProvider, &value_); err == nil {
+				s.DocumentHighlightProvider = value_
+			} else {
+				var value_ DocumentHighlightOptions
+				if err = json.Unmarshal(value.DocumentHighlightProvider, &value_); err == nil {
+					s.DocumentHighlightProvider = value_
+				} else {
+					return err
+				}
+			}
+		}
+
+		if value.DocumentSymbolProvider != nil {
+			var value_ bool
+			if err = json.Unmarshal(value.DocumentSymbolProvider, &value_); err == nil {
+				s.DocumentSymbolProvider = value_
+			} else {
+				var value_ DocumentSymbolOptions
+				if err = json.Unmarshal(value.DocumentSymbolProvider, &value_); err == nil {
+					s.DocumentSymbolProvider = value_
+				} else {
+					return err
+				}
+			}
+		}
+
+		if value.CodeActionProvider != nil {
+			var value_ bool
+			if err = json.Unmarshal(value.CodeActionProvider, &value_); err == nil {
+				s.CodeActionProvider = value_
+			} else {
+				var value_ CodeActionOptions
+				if err = json.Unmarshal(value.CodeActionProvider, &value_); err == nil {
+					s.CodeActionProvider = value_
+				} else {
+					return err
+				}
+			}
+		}
+
+		if value.ColorProvider != nil {
+			var value_ bool
+			if err = json.Unmarshal(value.ColorProvider, &value_); err == nil {
+				s.ColorProvider = value_
+			} else {
+				var value_ DocumentColorOptions
+				if err = json.Unmarshal(value.ColorProvider, &value_); err == nil {
+					s.ColorProvider = value_
+				} else {
+					var value_ DocumentColorRegistrationOptions
+					if err = json.Unmarshal(value.ColorProvider, &value_); err == nil {
+						s.ColorProvider = value_
+					} else {
+						return err
+					}
+				}
+			}
+		}
+
+		if value.DocumentFormattingProvider != nil {
+			var value_ bool
+			if err = json.Unmarshal(value.DocumentFormattingProvider, &value_); err == nil {
+				s.DocumentFormattingProvider = value_
+			} else {
+				var value_ DocumentFormattingOptions
+				if err = json.Unmarshal(value.DocumentFormattingProvider, &value_); err == nil {
+					s.DocumentFormattingProvider = value_
+				} else {
+					return err
+				}
+			}
+		}
+
+		if value.DocumentRangeFormattingProvider != nil {
+			var value_ bool
+			if err = json.Unmarshal(value.DocumentRangeFormattingProvider, &value_); err == nil {
+				s.DocumentRangeFormattingProvider = value_
+			} else {
+				var value_ DocumentRangeFormattingOptions
+				if err = json.Unmarshal(value.DocumentRangeFormattingProvider, &value_); err == nil {
+					s.DocumentRangeFormattingProvider = value_
+				} else {
+					return err
+				}
+			}
+		}
+
+		if value.RenameProvider != nil {
+			var value_ bool
+			if err = json.Unmarshal(value.RenameProvider, &value_); err == nil {
+				s.RenameProvider = value_
+			} else {
+				var value_ RenameOptions
+				if err = json.Unmarshal(value.RenameProvider, &value_); err == nil {
+					s.RenameProvider = value_
+				} else {
+					return err
+				}
+			}
+		}
+
+		if value.FoldingRangeProvider != nil {
+			var value_ bool
+			if err = json.Unmarshal(value.FoldingRangeProvider, &value_); err == nil {
+				s.FoldingRangeProvider = value_
+			} else {
+				var value_ FoldingRangeOptions
+				if err = json.Unmarshal(value.FoldingRangeProvider, &value_); err == nil {
+					s.FoldingRangeProvider = value_
+				} else {
+					var value_ FoldingRangeRegistrationOptions
+					if err = json.Unmarshal(value.FoldingRangeProvider, &value_); err == nil {
+						s.FoldingRangeProvider = value_
+					} else {
+						return err
+					}
+				}
+			}
+		}
+
+		if value.SelectionRangeProvider != nil {
+			var value_ bool
+			if err = json.Unmarshal(value.SelectionRangeProvider, &value_); err == nil {
+				s.SelectionRangeProvider = value_
+			} else {
+				var value_ SelectionRangeOptions
+				if err = json.Unmarshal(value.SelectionRangeProvider, &value_); err == nil {
+					s.SelectionRangeProvider = value_
+				} else {
+					var value_ SelectionRangeRegistrationOptions
+					if err = json.Unmarshal(value.SelectionRangeProvider, &value_); err == nil {
+						s.SelectionRangeProvider = value_
+					} else {
+						return err
+					}
+				}
+			}
+		}
+
+		if value.LinkedEditingRangeProvider != nil {
+			var value_ bool
+			if err = json.Unmarshal(value.LinkedEditingRangeProvider, &value_); err == nil {
+				s.LinkedEditingRangeProvider = value_
+			} else {
+				var value_ LinkedEditingRangeOptions
+				if err = json.Unmarshal(value.LinkedEditingRangeProvider, &value_); err == nil {
+					s.LinkedEditingRangeProvider = value_
+				} else {
+					var value_ LinkedEditingRangeRegistrationOptions
+					if err = json.Unmarshal(value.LinkedEditingRangeProvider, &value_); err == nil {
+						s.LinkedEditingRangeProvider = value_
+					} else {
+						return err
+					}
+				}
+			}
+		}
+
+		if value.CallHierarchyProvider != nil {
+			var value_ bool
+			if err = json.Unmarshal(value.CallHierarchyProvider, &value_); err == nil {
+				s.CallHierarchyProvider = value_
+			} else {
+				var value_ CallHierarchyOptions
+				if err = json.Unmarshal(value.CallHierarchyProvider, &value_); err == nil {
+					s.CallHierarchyProvider = value_
+				} else {
+					var value_ CallHierarchyRegistrationOptions
+					if err = json.Unmarshal(value.CallHierarchyProvider, &value_); err == nil {
+						s.CallHierarchyProvider = value_
+					} else {
+						return err
+					}
+				}
+			}
+		}
+
+		if value.SemanticTokensProvider != nil {
+			var value_ SemanticTokensOptions
+			if err = json.Unmarshal(value.SemanticTokensProvider, &value_); err == nil {
+				s.SemanticTokensProvider = value_
+			} else {
+				var value_ SemanticTokensRegistrationOptions
+				if err = json.Unmarshal(value.SemanticTokensProvider, &value_); err == nil {
+					s.SemanticTokensProvider = value_
+				} else {
+					return err
+				}
+			}
+		}
+
+		if value.MonikerProvider != nil {
+			var value_ bool
+			if err = json.Unmarshal(value.MonikerProvider, &value_); err == nil {
+				s.MonikerProvider = value_
+			} else {
+				var value_ MonikerOptions
+				if err = json.Unmarshal(value.MonikerProvider, &value_); err == nil {
+					s.MonikerProvider = value_
+				} else {
+					var value_ MonikerRegistrationOptions
+					if err = json.Unmarshal(value.MonikerProvider, &value_); err == nil {
+						s.MonikerProvider = value_
+					} else {
+						return err
+					}
+				}
+			}
+		}
+
+		if value.WorkspaceSymbolProvider != nil {
+			var value_ bool
+			if err = json.Unmarshal(value.WorkspaceSymbolProvider, &value_); err == nil {
+				s.WorkspaceSymbolProvider = value_
+			} else {
+				var value_ WorkspaceSymbolOptions
+				if err = json.Unmarshal(value.WorkspaceSymbolProvider, &value_); err == nil {
+					s.WorkspaceSymbolProvider = value_
+				} else {
+					return err
+				}
+			}
+		}
+
+		if value.DiagnosticProvider != nil {
+			var value_ DiagnosticOptions
+			if err = json.Unmarshal(value.DiagnosticProvider, &value_); err == nil {
+				s.DiagnosticProvider = value_
+			} else {
+				var value_ DiagnosticRegistrationOptions
+				if err = json.Unmarshal(value.DiagnosticProvider, &value_); err == nil {
+					s.DiagnosticProvider = value_
+				} else {
+					return err
+				}
+			}
+		}
+
+		return nil
+	} else {
+		return err
+	}
+}
+
+type InitializeResult_317 struct {
+	/**
+	 * The capabilities the language server provides.
+	 */
+	Capabilities ServerCapabilities_317 `json:"capabilities"`
+
+	/**
+	 * Information about the server.
+	 *
+	 * @since 3.15.0
+	 */
+	ServerInfo *InitializeResultServerInfo `json:"serverInfo,omitempty"`
 }

@@ -2,32 +2,37 @@ package server
 
 import (
 	contextpkg "context"
+	"encoding/json"
+	"errors"
 	"fmt"
 
 	"github.com/sourcegraph/jsonrpc2"
+
 	"github.com/tliron/glsp"
+	"github.com/tliron/glsp/protocol"
 )
 
 // See: https://github.com/sourcegraph/go-langserver/blob/master/langserver/handler.go#L206
 
-func (self *Server) newHandler() jsonrpc2.Handler {
-	return jsonrpc2.HandlerWithError(self.handle)
+func (s *Server) newHandler() jsonrpc2.Handler {
+	return jsonrpc2.HandlerWithError(s.handle)
 }
 
-func (self *Server) handle(context contextpkg.Context, connection *jsonrpc2.Conn, request *jsonrpc2.Request) (any, error) {
+func (s *Server) handle(context contextpkg.Context, connection *jsonrpc2.Conn, request *jsonrpc2.Request) (any, error) {
 	glspContext := glsp.Context{
 		Method: request.Method,
 		Notify: func(method string, params any) {
 			if err := connection.Notify(context, method, params); err != nil {
-				self.Log.Error(err.Error())
+				s.Log.Error(err.Error())
 			}
 		},
 		Call: func(method string, params any, result any) {
 			if err := connection.Call(context, method, params, result); err != nil {
-				self.Log.Error(err.Error())
+				s.Log.Error(err.Error())
 			}
 		},
-		Context: context,
+		Context:          context,
+		Protocol_Version: s.Handler.GetVersion(),
 	}
 
 	if request.Params != nil {
@@ -37,14 +42,14 @@ func (self *Server) handle(context contextpkg.Context, connection *jsonrpc2.Conn
 	switch request.Method {
 	case "exit":
 		// We're giving the attached handler a chance to handle it first, but we'll ignore any result
-		self.Handler.Handle(&glspContext)
+		s.HandlerHandle(&glspContext)
 		err := connection.Close()
 		return nil, err
 
 	default:
 		// Note: jsonrpc2 will not even call this function if reqest.Params is invalid JSON,
 		// so we don't need to handle jsonrpc2.CodeParseError here
-		result, validMethod, validParams, err := self.Handler.Handle(&glspContext)
+		result, validMethod, validParams, err := s.HandlerHandle(&glspContext)
 		if !validMethod {
 			return nil, &jsonrpc2.Error{
 				Code:    jsonrpc2.CodeMethodNotFound,
@@ -70,4 +75,45 @@ func (self *Server) handle(context contextpkg.Context, connection *jsonrpc2.Conn
 			return result, nil
 		}
 	}
+}
+
+// ([glsp.Handler] interface)
+func (s *Server) HandlerHandle(context *glsp.Context) (r any, validMethod bool, validParams bool, err error) {
+	if !s.Handler.IsInitialized() && (context.Method != protocol.MethodInitialize) {
+		return nil, true, true, errors.New("server not initialized")
+	}
+
+	handler, exists := s.Handler.GetMethodMap()[context.Method]
+	if !exists {
+		// Check custom methods
+		customMethods := s.Handler.GetCustomMethods()
+		if len(customMethods) > 0 {
+			if customHandler, ok := customMethods[context.Method]; ok {
+				validMethod = true
+				r, err = customHandler.Handle(context, context.Params)
+				validParams = true
+				return r, validMethod, validParams, err
+			}
+		}
+		return nil, false, false, nil
+	}
+
+	validMethod = true
+	r, err = handler.Handle(context, context.Params)
+	if err != nil {
+		// Check if it's an unmarshal error (invalid params) vs handler error
+		var unmarshalErr *json.UnmarshalTypeError
+		if errors.As(err, &unmarshalErr) {
+			return nil, true, false, nil
+		}
+	}
+	validParams = true
+
+	// Special handling for Initialize method
+	if context.Method == protocol.MethodInitialize && err == nil {
+		s.Handler.SetInitialized(true)
+	}
+
+	return r, validMethod, validParams, err
+
 }

@@ -52,7 +52,7 @@ type Position struct {
 	Character UInteger `json:"character"`
 }
 
-func (self Position) IndexIn(content string) int {
+func (p Position) IndexIn(content string) int {
 	// This code is modified from the gopls implementation found:
 	// https://cs.opensource.google/go/x/tools/+/refs/tags/v0.1.5:internal/span/utf16.go;l=70
 
@@ -63,7 +63,7 @@ func (self Position) IndexIn(content string) int {
 
 	// Find the byte offset for the line
 	index := 0
-	for row := UInteger(0); row < self.Line; row++ {
+	for row := UInteger(0); row < p.Line; row++ {
 		content_ := content[index:]
 		if next := strings.Index(content_, "\n"); next != -1 {
 			index += next + 1
@@ -77,7 +77,7 @@ func (self Position) IndexIn(content string) int {
 
 	byteOffset := index
 	remains := content[index:]
-	chr := int(self.Character)
+	chr := int(p.Character)
 
 	for count := 1; count <= chr; count++ {
 
@@ -112,16 +112,16 @@ func (self Position) IndexIn(content string) int {
 	return byteOffset
 }
 
-func (self Position) EndOfLineIn(content string) Position {
-	index := self.IndexIn(content)
+func (p Position) EndOfLineIn(content string) Position {
+	index := p.IndexIn(content)
 	content_ := content[index:]
 	if eol := strings.Index(content_, "\n"); eol != -1 {
 		return Position{
-			Line:      self.Line,
-			Character: self.Character + UInteger(eol),
+			Line:      p.Line,
+			Character: p.Character + UInteger(eol),
 		}
 	} else {
-		return self
+		return p
 	}
 }
 
@@ -139,8 +139,8 @@ type Range struct {
 	End Position `json:"end"`
 }
 
-func (self Range) IndexesIn(content string) (int, int) {
-	return self.Start.IndexIn(content), self.End.IndexIn(content)
+func (r Range) IndexesIn(content string) (int, int) {
+	return r.Start.IndexIn(content), r.End.IndexIn(content)
 }
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#location
@@ -420,23 +420,23 @@ type TextDocumentEdit struct {
 }
 
 // ([json.Unmarshaler] interface)
-func (self *TextDocumentEdit) UnmarshalJSON(data []byte) error {
+func (t *TextDocumentEdit) UnmarshalJSON(data []byte) error {
 	var value struct {
 		TextDocument OptionalVersionedTextDocumentIdentifier `json:"textDocument"`
 		Edits        []json.RawMessage                       `json:"edits"` // TextEdit | AnnotatedTextEdit
 	}
 
 	if err := json.Unmarshal(data, &value); err == nil {
-		self.TextDocument = value.TextDocument
+		t.TextDocument = value.TextDocument
 
 		for _, edit := range value.Edits {
 			var value TextEdit
 			if err = json.Unmarshal(edit, &value); err == nil {
-				self.Edits = append(self.Edits, value)
+				t.Edits = append(t.Edits, value)
 			} else {
 				var value AnnotatedTextEdit
 				if err = json.Unmarshal(edit, &value); err == nil {
-					self.Edits = append(self.Edits, value)
+					t.Edits = append(t.Edits, value)
 				} else {
 					return err
 				}
@@ -621,7 +621,7 @@ type WorkspaceEdit struct {
 }
 
 // ([json.Unmarshaler] interface)
-func (self *WorkspaceEdit) UnmarshalJSON(data []byte) error {
+func (w *WorkspaceEdit) UnmarshalJSON(data []byte) error {
 	var value struct {
 		Changes           map[DocumentUri][]TextEdit                      `json:"changes"`
 		DocumentChanges   []json.RawMessage                               `json:"documentChanges"` // TextDocumentEdit | CreateFile | RenameFile | DeleteFile
@@ -629,25 +629,25 @@ func (self *WorkspaceEdit) UnmarshalJSON(data []byte) error {
 	}
 
 	if err := json.Unmarshal(data, &value); err == nil {
-		self.Changes = value.Changes
-		self.ChangeAnnotations = value.ChangeAnnotations
+		w.Changes = value.Changes
+		w.ChangeAnnotations = value.ChangeAnnotations
 
 		for _, documentChange := range value.DocumentChanges {
 			var value TextDocumentEdit
 			if err = json.Unmarshal(documentChange, &value); err == nil {
-				self.DocumentChanges = append(self.DocumentChanges, value)
+				w.DocumentChanges = append(w.DocumentChanges, value)
 			} else {
 				var value CreateFile
 				if err = json.Unmarshal(documentChange, &value); err == nil {
-					self.DocumentChanges = append(self.DocumentChanges, value)
+					w.DocumentChanges = append(w.DocumentChanges, value)
 				} else {
 					var value RenameFile
 					if err = json.Unmarshal(documentChange, &value); err == nil {
-						self.DocumentChanges = append(self.DocumentChanges, value)
+						w.DocumentChanges = append(w.DocumentChanges, value)
 					} else {
 						var value DeleteFile
 						if err = json.Unmarshal(documentChange, &value); err == nil {
-							self.DocumentChanges = append(self.DocumentChanges, value)
+							w.DocumentChanges = append(w.DocumentChanges, value)
 						} else {
 							return err
 						}

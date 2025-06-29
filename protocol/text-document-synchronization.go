@@ -93,25 +93,25 @@ type DidChangeTextDocumentParams struct {
 }
 
 // ([json.Unmarshaler] interface)
-func (self *DidChangeTextDocumentParams) UnmarshalJSON(data []byte) error {
+func (d *DidChangeTextDocumentParams) UnmarshalJSON(data []byte) error {
 	var value struct {
 		TextDocument   VersionedTextDocumentIdentifier `json:"textDocument"`
 		ContentChanges []json.RawMessage               `json:"contentChanges"` // TextDocumentContentChangeEvent or TextDocumentContentChangeEventWhole
 	}
 
 	if err := json.Unmarshal(data, &value); err == nil {
-		self.TextDocument = value.TextDocument
+		d.TextDocument = value.TextDocument
 
 		for _, contentChange := range value.ContentChanges {
 			var changeEvent TextDocumentContentChangeEvent
 			if err = json.Unmarshal(contentChange, &changeEvent); err == nil {
 				if changeEvent.Range != nil {
-					self.ContentChanges = append(self.ContentChanges, changeEvent)
+					d.ContentChanges = append(d.ContentChanges, changeEvent)
 				} else {
 					changeEventWhole := TextDocumentContentChangeEventWhole{
 						Text: changeEvent.Text,
 					}
-					self.ContentChanges = append(self.ContentChanges, changeEventWhole)
+					d.ContentChanges = append(d.ContentChanges, changeEventWhole)
 				}
 			} else {
 				return err
@@ -300,7 +300,7 @@ type TextDocumentSyncOptions struct {
 }
 
 // ([json.Unmarshaler] interface)
-func (self *TextDocumentSyncOptions) UnmarshalJSON(data []byte) error {
+func (t *TextDocumentSyncOptions) UnmarshalJSON(data []byte) error {
 	var value struct {
 		OpenClose         *bool                 `json:"openClose"`
 		Change            *TextDocumentSyncKind `json:"change"`
@@ -310,19 +310,19 @@ func (self *TextDocumentSyncOptions) UnmarshalJSON(data []byte) error {
 	}
 
 	if err := json.Unmarshal(data, &value); err == nil {
-		self.OpenClose = value.OpenClose
-		self.Change = value.Change
-		self.WillSave = value.WillSave
-		self.WillSaveWaitUntil = value.WillSaveWaitUntil
+		t.OpenClose = value.OpenClose
+		t.Change = value.Change
+		t.WillSave = value.WillSave
+		t.WillSaveWaitUntil = value.WillSaveWaitUntil
 
 		if value.Save != nil {
 			var value_ bool
 			if err = json.Unmarshal(value.Save, &value_); err == nil {
-				self.Save = value_
+				t.Save = value_
 			} else {
 				var value_ SaveOptions
 				if err = json.Unmarshal(value.Save, &value_); err == nil {
-					self.Save = value_
+					t.Save = value_
 				} else {
 					return err
 				}
