@@ -18,20 +18,20 @@ func (s *Server) newHandler() jsonrpc2.Handler {
 	return jsonrpc2.HandlerWithError(s.handle)
 }
 
-func (s *Server) handle(context context.Context, connection *jsonrpc2.Conn, request *jsonrpc2.Request) (any, error) {
+func (s *Server) handle(ctx context.Context, connection *jsonrpc2.Conn, request *jsonrpc2.Request) (any, error) {
 	glspContext := glsp.Context{
 		Method: request.Method,
 		Notify: func(method string, params any) {
-			if err := connection.Notify(context, method, params); err != nil {
+			if err := connection.Notify(ctx, method, params); err != nil {
 				s.Log.Error(err.Error())
 			}
 		},
 		Call: func(method string, params any, result any) {
-			if err := connection.Call(context, method, params, result); err != nil {
+			if err := connection.Call(ctx, method, params, result); err != nil {
 				s.Log.Error(err.Error())
 			}
 		},
-		Context:          context,
+		Context:          ctx,
 		Protocol_Version: s.Handler.GetVersion(),
 	}
 
@@ -95,7 +95,7 @@ func (s *Server) HandlerHandle(context *glsp.Context) (r any, validMethod bool, 
 				return r, validMethod, validParams, err
 			}
 		}
-		return nil, false, false, nil
+		return nil, false, false, fmt.Errorf("method not supported: %s", context.Method)
 	}
 
 	validMethod = true

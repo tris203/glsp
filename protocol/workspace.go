@@ -1,7 +1,5 @@
 package protocol
 
-import "github.com/tliron/glsp"
-
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#workspace_workspaceFolders
 
 const ServerWorkspaceWorkspaceFolders = Method("workspace/workspaceFolders")
@@ -41,8 +39,6 @@ type WorkspaceFolder struct {
 
 const MethodWorkspaceDidChangeWorkspaceFolders = Method("workspace/didChangeWorkspaceFolders")
 
-type WorkspaceDidChangeWorkspaceFoldersFunc func(context *glsp.Context, params *DidChangeWorkspaceFoldersParams) error
-
 type DidChangeWorkspaceFoldersParams struct {
 	/**
 	 * The actual workspace folder change event.
@@ -75,8 +71,6 @@ type DidChangeConfigurationClientCapabilities struct {
 }
 
 const MethodWorkspaceDidChangeConfiguration = Method("workspace/didChangeConfiguration")
-
-type WorkspaceDidChangeConfigurationFunc func(context *glsp.Context, params *DidChangeConfigurationParams) error
 
 type DidChangeConfigurationParams struct {
 	/**
@@ -171,8 +165,6 @@ const (
 
 const MethodWorkspaceDidChangeWatchedFiles = Method("workspace/didChangeWatchedFiles")
 
-type WorkspaceDidChangeWatchedFilesFunc func(context *glsp.Context, params *DidChangeWatchedFilesParams) error
-
 type DidChangeWatchedFilesParams struct {
 	/**
 	 * The actual file events.
@@ -264,8 +256,6 @@ type WorkspaceSymbolRegistrationOptions struct {
 
 const MethodWorkspaceSymbol = Method("workspace/symbol")
 
-type WorkspaceSymbolFunc func(context *glsp.Context, params *WorkspaceSymbolParams) ([]SymbolInformation, error)
-
 type WorkspaceSymbolParams struct {
 	WorkDoneProgressParams
 	PartialResultParams
@@ -303,8 +293,6 @@ type ExecuteCommandRegistrationOptions struct {
 }
 
 const MethodWorkspaceExecuteCommand = Method("workspace/executeCommand")
-
-type WorkspaceExecuteCommandFunc func(context *glsp.Context, params *ExecuteCommandParams) (any, error)
 
 type ExecuteCommandParams struct {
 	WorkDoneProgressParams
@@ -462,8 +450,6 @@ type FileOperationFilter struct {
 
 const MethodWorkspaceWillCreateFiles = Method("workspace/willCreateFiles")
 
-type WorkspaceWillCreateFilesFunc func(context *glsp.Context, params *CreateFilesParams) (*WorkspaceEdit, error)
-
 /**
  * The parameters sent in notifications/requests for user-initiated creation
  * of files.
@@ -493,13 +479,9 @@ type FileCreate struct {
 
 const MethodWorkspaceDidCreateFiles = Method("workspace/didCreateFiles")
 
-type WorkspaceDidCreateFilesFunc func(context *glsp.Context, params *CreateFilesParams) error
-
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#workspace_willRenameFiles
 
 const MethodWorkspaceWillRenameFiles = Method("workspace/willRenameFiles")
-
-type WorkspaceWillRenameFilesFunc func(context *glsp.Context, params *RenameFilesParams) (*WorkspaceEdit, error)
 
 /**
  * The parameters sent in notifications/requests for user-initiated renames
@@ -536,13 +518,9 @@ type FileRename struct {
 
 const MethodWorkspaceDidRenameFiles = Method("workspace/didRenameFiles")
 
-type WorkspaceDidRenameFilesFunc func(context *glsp.Context, params *RenameFilesParams) error
-
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#workspace_willDeleteFiles
 
 const MethodWorkspaceWillDeleteFiles = Method("workspace/willDeleteFiles")
-
-type WorkspaceWillDeleteFilesFunc func(context *glsp.Context, params *DeleteFilesParams) (*WorkspaceEdit, error)
 
 /**
  * The parameters sent in notifications/requests for user-initiated deletes
@@ -573,12 +551,8 @@ type FileDelete struct {
 
 const MethodWorkspaceDidDeleteFiles = Method("workspace/didDeleteFiles")
 
-type WorkspaceDidDeleteFilesFunc func(context *glsp.Context, params *DeleteFilesParams) error
-
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16/#textDocument_semanticTokens
 const MethodWorkspaceSemanticTokensRefresh = Method("workspace/semanticTokens/refresh")
-
-type WorkspaceSemanticTokensRefreshFunc func(context *glsp.Context) error
 
 type SemanticTokensWorkspaceClientCapabilities struct {
 	/**

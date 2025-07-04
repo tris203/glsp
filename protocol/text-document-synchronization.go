@@ -1,10 +1,6 @@
 package protocol
 
-import (
-	"encoding/json"
-
-	"github.com/tliron/glsp"
-)
+import "encoding/json"
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#textDocument_synchronization
 
@@ -38,8 +34,6 @@ const (
 
 const MethodTextDocumentDidOpen = Method("textDocument/didOpen")
 
-type TextDocumentDidOpenFunc func(context *glsp.Context, params *DidOpenTextDocumentParams) error
-
 type DidOpenTextDocumentParams struct {
 	/**
 	 * The document that was opened.
@@ -63,8 +57,6 @@ type TextDocumentChangeRegistrationOptions struct {
 }
 
 const MethodTextDocumentDidChange = Method("textDocument/didChange")
-
-type TextDocumentDidChangeFunc func(context *glsp.Context, params *DidChangeTextDocumentParams) error
 
 type DidChangeTextDocumentParams struct {
 	/**
@@ -158,8 +150,6 @@ type TextDocumentContentChangeEventWhole struct {
 
 const MethodTextDocumentWillSave = Method("textDocument/willSave")
 
-type TextDocumentWillSaveFunc func(context *glsp.Context, params *WillSaveTextDocumentParams) error
-
 /**
  * The parameters send in a will save text document notification.
  */
@@ -202,8 +192,6 @@ const (
 
 const MethodTextDocumentWillSaveWaitUntil = Method("textDocument/willSaveWaitUntil")
 
-type TextDocumentWillSaveWaitUntilFunc func(context *glsp.Context, params *WillSaveTextDocumentParams) ([]TextEdit, error)
-
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#textDocument_didSave
 
 type SaveOptions struct {
@@ -223,8 +211,6 @@ type TextDocumentSaveRegistrationOptions struct {
 }
 
 const MethodTextDocumentDidSave = Method("textDocument/didSave")
-
-type TextDocumentDidSaveFunc func(context *glsp.Context, params *DidSaveTextDocumentParams) error
 
 type DidSaveTextDocumentParams struct {
 	/**
@@ -336,8 +322,6 @@ func (t *TextDocumentSyncOptions) UnmarshalJSON(data []byte) error {
 }
 
 const MethodTextDocumentDidClose = Method("textDocument/didClose")
-
-type TextDocumentDidCloseFunc func(context *glsp.Context, params *DidCloseTextDocumentParams) error
 
 type DidCloseTextDocumentParams struct {
 	/**

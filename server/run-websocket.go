@@ -17,7 +17,7 @@ func (s *Server) RunWebSocket(address string) error {
 	mux.HandleFunc("/", func(writer http.ResponseWriter, request *http.Request) {
 		connection, err := upgrader.Upgrade(writer, request, nil)
 		if err != nil {
-			s.Log.Warn("error upgrading HTTP to web socket: %s", "error", err.Error())
+			s.Log.Warn("error upgrading HTTP to web socket", "error", err)
 			http.Error(writer, fmt.Errorf("could not upgrade to web socket: %w", err).Error(), http.StatusBadRequest)
 			return
 		}

@@ -9,7 +9,7 @@ import (
 func (s *Server) newNetworkListener(network string, address string) (*net.Listener, error) {
 	listener, err := net.Listen(network, address)
 	if err != nil {
-		s.Log.Error("could not bind to address %s: %v", address, err)
+		s.Log.Error("could not bind to address", "address", address, "error", err)
 		return nil, err
 	}
 

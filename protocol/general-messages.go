@@ -3,16 +3,12 @@ package protocol
 import (
 	"encoding/json"
 
-	"github.com/tliron/glsp"
 	"slices"
 )
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#initialize
 
 const MethodInitialize = Method("initialize")
-
-// Returns: InitializeResult | InitializeError
-type InitializeFunc[P InitializeParams_316 | InitializeParams_317, R InitializeResult_316 | InitializeResult_317] func(context *glsp.Context, params *P) (*R, error)
 
 type InitializeParams_316 struct {
 	WorkDoneProgressParams
@@ -1106,27 +1102,19 @@ func (s *ServerCapabilities_316) UnmarshalJSON(data []byte) error {
 
 const MethodInitialized = Method("initialized")
 
-type InitializedFunc func(context *glsp.Context, params *InitializedParams) error
-
 type InitializedParams struct{}
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#shutdown
 
 const MethodShutdown = Method("shutdown")
 
-type ShutdownFunc func(context *glsp.Context) error
-
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#exit
 
 const MethodExit = Method("exit")
 
-type ExitFunc func(context *glsp.Context) error
-
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#logTrace
 
 const MethodLogTrace = Method("$/logTrace")
-
-type LogTraceFunc func(context *glsp.Context, params *LogTraceParams) error
 
 type LogTraceParams struct {
 	/**
@@ -1144,8 +1132,6 @@ type LogTraceParams struct {
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#setTrace
 
 const MethodSetTrace = Method("$/setTrace")
-
-type SetTraceFunc func(context *glsp.Context, params *SetTraceParams) error
 
 type SetTraceParams struct {
 	/**

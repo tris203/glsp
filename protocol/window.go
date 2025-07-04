@@ -1,7 +1,5 @@
 package protocol
 
-import "github.com/tliron/glsp"
-
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#window_showMessage
 
 const ServerWindowShowMessage = Method("window/showMessage")
@@ -178,8 +176,6 @@ type WorkDoneProgressCreateParams struct {
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#window_workDoneProgress_cancel
 
 const MethodWindowWorkDoneProgressCancel = Method("window/workDoneProgress/cancel")
-
-type WindowWorkDoneProgressCancelFunc func(context *glsp.Context, params *WorkDoneProgressCancelParams) error
 
 type WorkDoneProgressCancelParams struct {
 	/**

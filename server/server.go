@@ -14,10 +14,8 @@ var DefaultTimeout = time.Minute
 //
 
 type Server struct {
-	Handler         glsp.RPCHandler
-	LogBaseName     string
-	Debug           bool
-	ProtocolVersion glsp.LspProtocolVersion
+	Handler glsp.RPCHandler
+	Debug   bool
 
 	Log              *slog.Logger
 	Timeout          time.Duration

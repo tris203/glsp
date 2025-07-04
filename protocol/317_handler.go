@@ -9,169 +9,164 @@ import (
 
 type Handler_317 struct {
 	// Base Protocol
-	CancelRequest CancelRequestFunc
-	Progress      ProgressFunc
+	CancelRequest NotificationFunc[CancelParams]
+	Progress      NotificationFunc[ProgressParams]
 
 	// General Messages
-	Initialize  InitializeFunc[InitializeParams_317, InitializeResult_317]
-	Initialized InitializedFunc
-	Shutdown    ShutdownFunc
-	Exit        ExitFunc
-	LogTrace    LogTraceFunc
-	SetTrace    SetTraceFunc
+	Initialize  RequestFunc[InitializeParams_316, InitializeResult_316]
+	Initialized NotificationFunc[InitializedParams]
+	Shutdown    ContextOnlyFunc
+	Exit        ContextOnlyFunc
+	LogTrace    NotificationFunc[LogTraceParams]
+	SetTrace    NotificationFunc[SetTraceParams]
 
 	// Window
-	WindowWorkDoneProgressCancel WindowWorkDoneProgressCancelFunc
+	WindowWorkDoneProgressCancel NotificationFunc[WorkDoneProgressCancelParams]
 
 	// Workspace
-	WorkspaceDidChangeWorkspaceFolders WorkspaceDidChangeWorkspaceFoldersFunc
-	WorkspaceDidChangeConfiguration    WorkspaceDidChangeConfigurationFunc
-	WorkspaceDidChangeWatchedFiles     WorkspaceDidChangeWatchedFilesFunc
-	WorkspaceSymbol                    WorkspaceSymbolFunc
-	WorkspaceExecuteCommand            WorkspaceExecuteCommandFunc
-	WorkspaceWillCreateFiles           WorkspaceWillCreateFilesFunc
-	WorkspaceDidCreateFiles            WorkspaceDidCreateFilesFunc
-	WorkspaceWillRenameFiles           WorkspaceWillRenameFilesFunc
-	WorkspaceDidRenameFiles            WorkspaceDidRenameFilesFunc
-	WorkspaceWillDeleteFiles           WorkspaceWillDeleteFilesFunc
-	WorkspaceDidDeleteFiles            WorkspaceDidDeleteFilesFunc
-	WorkspaceSemanticTokensRefresh     WorkspaceSemanticTokensRefreshFunc
+	WorkspaceDidChangeWorkspaceFolders NotificationFunc[DidChangeWorkspaceFoldersParams]
+	WorkspaceDidChangeConfiguration    NotificationFunc[DidChangeConfigurationParams]
+	WorkspaceDidChangeWatchedFiles     NotificationFunc[DidChangeWatchedFilesParams]
+	WorkspaceSymbol                    RequestFunc[WorkspaceSymbolParams, []SymbolInformation]
+	WorkspaceExecuteCommand            RequestFunc[ExecuteCommandParams, any]
+	WorkspaceWillCreateFiles           RequestFunc[CreateFilesParams, WorkspaceEdit]
+	WorkspaceDidCreateFiles            NotificationFunc[CreateFilesParams]
+	WorkspaceWillRenameFiles           RequestFunc[RenameFilesParams, WorkspaceEdit]
+	WorkspaceDidRenameFiles            NotificationFunc[RenameFilesParams]
+	WorkspaceWillDeleteFiles           RequestFunc[DeleteFilesParams, WorkspaceEdit]
+	WorkspaceDidDeleteFiles            NotificationFunc[DeleteFilesParams]
+	WorkspaceSemanticTokensRefresh     ContextOnlyFunc
 
 	// Text Document Synchronization
-	TextDocumentDidOpen           TextDocumentDidOpenFunc
-	TextDocumentDidChange         TextDocumentDidChangeFunc
-	TextDocumentWillSave          TextDocumentWillSaveFunc
-	TextDocumentWillSaveWaitUntil TextDocumentWillSaveWaitUntilFunc
-	TextDocumentDidSave           TextDocumentDidSaveFunc
-	TextDocumentDidClose          TextDocumentDidCloseFunc
+	TextDocumentDidOpen           NotificationFunc[DidOpenTextDocumentParams]
+	TextDocumentDidChange         NotificationFunc[DidChangeTextDocumentParams]
+	TextDocumentWillSave          NotificationFunc[WillSaveTextDocumentParams]
+	TextDocumentWillSaveWaitUntil RequestFunc[WillSaveTextDocumentParams, []TextEdit]
+	TextDocumentDidSave           NotificationFunc[DidSaveTextDocumentParams]
+	TextDocumentDidClose          NotificationFunc[DidCloseTextDocumentParams]
 
 	// Language Features
-	TextDocumentCompletion              TextDocumentCompletionFunc
-	CompletionItemResolve               CompletionItemResolveFunc
-	TextDocumentHover                   TextDocumentHoverFunc
-	TextDocumentSignatureHelp           TextDocumentSignatureHelpFunc
-	TextDocumentDeclaration             TextDocumentDeclarationFunc
-	TextDocumentDefinition              TextDocumentDefinitionFunc
-	TextDocumentDiagnostic              TextDocumentDiagnosticFunc
-	TextDocumentTypeDefinition          TextDocumentTypeDefinitionFunc
-	TextDocumentImplementation          TextDocumentImplementationFunc
-	TextDocumentReferences              TextDocumentReferencesFunc
-	TextDocumentDocumentHighlight       TextDocumentDocumentHighlightFunc
-	TextDocumentDocumentSymbol          TextDocumentDocumentSymbolFunc
-	TextDocumentCodeAction              TextDocumentCodeActionFunc
-	CodeActionResolve                   CodeActionResolveFunc
-	TextDocumentCodeLens                TextDocumentCodeLensFunc
-	CodeLensResolve                     CodeLensResolveFunc
-	TextDocumentDocumentLink            TextDocumentDocumentLinkFunc
-	DocumentLinkResolve                 DocumentLinkResolveFunc
-	TextDocumentColor                   TextDocumentColorFunc
-	TextDocumentColorPresentation       TextDocumentColorPresentationFunc
-	TextDocumentFormatting              TextDocumentFormattingFunc
-	TextDocumentRangeFormatting         TextDocumentRangeFormattingFunc
-	TextDocumentOnTypeFormatting        TextDocumentOnTypeFormattingFunc
-	TextDocumentRename                  TextDocumentRenameFunc
-	TextDocumentPrepareRename           TextDocumentPrepareRenameFunc
-	TextDocumentFoldingRange            TextDocumentFoldingRangeFunc
-	TextDocumentSelectionRange          TextDocumentSelectionRangeFunc
-	TextDocumentPrepareCallHierarchy    TextDocumentPrepareCallHierarchyFunc
-	CallHierarchyIncomingCalls          CallHierarchyIncomingCallsFunc
-	CallHierarchyOutgoingCalls          CallHierarchyOutgoingCallsFunc
-	TextDocumentSemanticTokensFull      TextDocumentSemanticTokensFullFunc
-	TextDocumentSemanticTokensFullDelta TextDocumentSemanticTokensFullDeltaFunc
-	TextDocumentSemanticTokensRange     TextDocumentSemanticTokensRangeFunc
-	TextDocumentLinkedEditingRange      TextDocumentLinkedEditingRangeFunc
-	TextDocumentMoniker                 TextDocumentMonikerFunc
-
-	// Custom Request/Notification
-	CustomMethod map[string]CustomMethodHandler
+	TextDocumentCompletion              RequestFunc[CompletionParams, any]
+	CompletionItemResolve               RequestFunc[CompletionItem, CompletionItem]
+	TextDocumentHover                   RequestFunc[HoverParams, Hover]
+	TextDocumentSignatureHelp           RequestFunc[SignatureHelpParams, SignatureHelp]
+	TextDocumentDeclaration             RequestFunc[DeclarationParams, any]
+	TextDocumentDefinition              RequestFunc[DefinitionParams, any]
+	TextDocumentDiagnostic              RequestFunc[DocumentDiagnosticParams, any]
+	TextDocumentTypeDefinition          RequestFunc[TypeDefinitionParams, any]
+	TextDocumentImplementation          RequestFunc[ImplementationParams, any]
+	TextDocumentReferences              RequestFunc[ReferenceParams, []Location]
+	TextDocumentDocumentHighlight       RequestFunc[DocumentHighlightParams, []DocumentHighlight]
+	TextDocumentDocumentSymbol          RequestFunc[DocumentSymbolParams, any]
+	TextDocumentCodeAction              RequestFunc[CodeAction, any]
+	CodeActionResolve                   RequestFunc[CodeAction, CodeAction]
+	TextDocumentCodeLens                RequestFunc[CodeLensParams, []CodeLens]
+	CodeLensResolve                     RequestFunc[CodeLens, CodeLens]
+	TextDocumentDocumentLink            RequestFunc[DocumentLinkParams, []DocumentLink]
+	DocumentLinkResolve                 RequestFunc[DocumentLink, DocumentLink]
+	TextDocumentColor                   RequestFunc[DocumentColorParams, []ColorInformation]
+	TextDocumentColorPresentation       RequestFunc[ColorPresentationParams, []ColorPresentation]
+	TextDocumentFormatting              RequestFunc[DocumentFormattingParams, []TextEdit]
+	TextDocumentRangeFormatting         RequestFunc[DocumentRangeFormattingParams, []TextEdit]
+	TextDocumentOnTypeFormatting        RequestFunc[DocumentOnTypeFormattingParams, []TextEdit]
+	TextDocumentRename                  RequestFunc[RenameParams, WorkspaceEdit]
+	TextDocumentPrepareRename           RequestFunc[PrepareRenameParams, any]
+	TextDocumentFoldingRange            RequestFunc[FoldingRangeParams, []FoldingRange]
+	TextDocumentSelectionRange          RequestFunc[SelectionRangeParams, []SelectionRange]
+	TextDocumentPrepareCallHierarchy    RequestFunc[CallHierarchyPrepareParams, []CallHierarchyItem]
+	CallHierarchyIncomingCalls          RequestFunc[CallHierarchyIncomingCallsParams, []CallHierarchyIncomingCall]
+	CallHierarchyOutgoingCalls          RequestFunc[CallHierarchyOutgoingCallsParams, []CallHierarchyOutgoingCall]
+	TextDocumentSemanticTokensFull      RequestFunc[SemanticTokensParams, SemanticTokens]
+	TextDocumentSemanticTokensFullDelta RequestFunc[SemanticTokensDeltaParams, any]
+	TextDocumentSemanticTokensRange     RequestFunc[SemanticTokensRangeParams, SemanticTokens]
+	TextDocumentLinkedEditingRange      RequestFunc[LinkedEditingRangeParams, LinkedEditingRanges]
+	TextDocumentMoniker                 RequestFunc[MonikerParams, []Moniker]
 
 	initialized bool
 	lock        sync.Mutex
+	handlerMap  map[Method]glsp.HandlerInterface
 }
 
 func (h *Handler_317) GetMethodMap() map[Method]glsp.HandlerInterface {
+	h.lock.Lock()
+	defer h.lock.Unlock()
 
-	return map[Method]glsp.HandlerInterface{
-		// Base Protocol
-		MethodCancelRequest: translation.NewNotificationHandler(h.CancelRequest),
-		MethodProgress:      translation.NewNotificationHandler(h.Progress),
-		MethodInitialize:    translation.NewTypedHandler(h.Initialize),
-		MethodInitialized:   translation.NewNotificationHandler(h.Initialized),
-		MethodShutdown:      translation.NewContextOnlyHandler(h.Shutdown),
-		MethodExit:          translation.NewContextOnlyHandler(h.Exit),
-		MethodLogTrace:      translation.NewNotificationHandler(h.LogTrace),
-		MethodSetTrace:      translation.NewNotificationHandler(h.SetTrace),
+	if h.handlerMap == nil {
+		h.handlerMap = map[Method]glsp.HandlerInterface{
+			// Base Protocol
+			MethodCancelRequest: translation.NewNotificationHandler(h.CancelRequest),
+			MethodProgress:      translation.NewNotificationHandler(h.Progress),
+			MethodInitialize:    translation.NewTypedHandler(h.Initialize),
+			MethodInitialized:   translation.NewNotificationHandler(h.Initialized),
+			MethodShutdown:      translation.NewContextOnlyHandler(h.Shutdown),
+			MethodExit:          translation.NewContextOnlyHandler(h.Exit),
+			MethodLogTrace:      translation.NewNotificationHandler(h.LogTrace),
+			MethodSetTrace:      translation.NewNotificationHandler(h.SetTrace),
 
-		// Window
-		MethodWindowWorkDoneProgressCancel: translation.NewNotificationHandler(h.WindowWorkDoneProgressCancel),
+			// Window
+			MethodWindowWorkDoneProgressCancel: translation.NewNotificationHandler(h.WindowWorkDoneProgressCancel),
 
-		// Workspace
-		MethodWorkspaceDidChangeWorkspaceFolders: translation.NewNotificationHandler(h.WorkspaceDidChangeWorkspaceFolders),
-		MethodWorkspaceDidChangeConfiguration:    translation.NewNotificationHandler(h.WorkspaceDidChangeConfiguration),
-		MethodWorkspaceDidChangeWatchedFiles:     translation.NewNotificationHandler(h.WorkspaceDidChangeWatchedFiles),
-		MethodWorkspaceSymbol:                    translation.NewTypedHandler(h.WorkspaceSymbol),
-		MethodWorkspaceExecuteCommand:            translation.NewTypedHandler(h.WorkspaceExecuteCommand),
-		MethodWorkspaceWillCreateFiles:           translation.NewTypedHandler(h.WorkspaceWillCreateFiles),
-		MethodWorkspaceDidCreateFiles:            translation.NewNotificationHandler(h.WorkspaceDidCreateFiles),
-		MethodWorkspaceWillRenameFiles:           translation.NewTypedHandler(h.WorkspaceWillRenameFiles),
-		MethodWorkspaceDidRenameFiles:            translation.NewNotificationHandler(h.WorkspaceDidRenameFiles),
-		MethodWorkspaceWillDeleteFiles:           translation.NewTypedHandler(h.WorkspaceWillDeleteFiles),
-		MethodWorkspaceDidDeleteFiles:            translation.NewNotificationHandler(h.WorkspaceDidDeleteFiles),
-		MethodWorkspaceSemanticTokensRefresh:     translation.NewContextOnlyHandler(h.WorkspaceSemanticTokensRefresh),
+			// Workspace
+			MethodWorkspaceDidChangeWorkspaceFolders: translation.NewNotificationHandler(h.WorkspaceDidChangeWorkspaceFolders),
+			MethodWorkspaceDidChangeConfiguration:    translation.NewNotificationHandler(h.WorkspaceDidChangeConfiguration),
+			MethodWorkspaceDidChangeWatchedFiles:     translation.NewNotificationHandler(h.WorkspaceDidChangeWatchedFiles),
+			MethodWorkspaceSymbol:                    translation.NewTypedHandler(h.WorkspaceSymbol),
+			MethodWorkspaceExecuteCommand:            translation.NewTypedHandler(h.WorkspaceExecuteCommand),
+			MethodWorkspaceWillCreateFiles:           translation.NewTypedHandler(h.WorkspaceWillCreateFiles),
+			MethodWorkspaceDidCreateFiles:            translation.NewNotificationHandler(h.WorkspaceDidCreateFiles),
+			MethodWorkspaceWillRenameFiles:           translation.NewTypedHandler(h.WorkspaceWillRenameFiles),
+			MethodWorkspaceDidRenameFiles:            translation.NewNotificationHandler(h.WorkspaceDidRenameFiles),
+			MethodWorkspaceWillDeleteFiles:           translation.NewTypedHandler(h.WorkspaceWillDeleteFiles),
+			MethodWorkspaceDidDeleteFiles:            translation.NewNotificationHandler(h.WorkspaceDidDeleteFiles),
+			MethodWorkspaceSemanticTokensRefresh:     translation.NewContextOnlyHandler(h.WorkspaceSemanticTokensRefresh),
 
-		// Text Document Synchronization
-		MethodTextDocumentDidOpen:           translation.NewNotificationHandler(h.TextDocumentDidOpen),
-		MethodTextDocumentDidChange:         translation.NewNotificationHandler(h.TextDocumentDidChange),
-		MethodTextDocumentWillSave:          translation.NewNotificationHandler(h.TextDocumentWillSave),
-		MethodTextDocumentWillSaveWaitUntil: translation.NewTypedHandler(h.TextDocumentWillSaveWaitUntil),
-		MethodTextDocumentDidSave:           translation.NewNotificationHandler(h.TextDocumentDidSave),
-		MethodTextDocumentDidClose:          translation.NewNotificationHandler(h.TextDocumentDidClose),
+			// Text Document Synchronization
+			MethodTextDocumentDidOpen:           translation.NewNotificationHandler(h.TextDocumentDidOpen),
+			MethodTextDocumentDidChange:         translation.NewNotificationHandler(h.TextDocumentDidChange),
+			MethodTextDocumentWillSave:          translation.NewNotificationHandler(h.TextDocumentWillSave),
+			MethodTextDocumentWillSaveWaitUntil: translation.NewTypedHandler(h.TextDocumentWillSaveWaitUntil),
+			MethodTextDocumentDidSave:           translation.NewNotificationHandler(h.TextDocumentDidSave),
+			MethodTextDocumentDidClose:          translation.NewNotificationHandler(h.TextDocumentDidClose),
 
-		// Language Features
-		MethodTextDocumentCompletion:              translation.NewTypedHandler(h.TextDocumentCompletion),
-		MethodCompletionItemResolve:               translation.NewTypedHandler(h.CompletionItemResolve),
-		MethodTextDocumentHover:                   translation.NewTypedHandler(h.TextDocumentHover),
-		MethodTextDocumentSignatureHelp:           translation.NewTypedHandler(h.TextDocumentSignatureHelp),
-		MethodTextDocumentDeclaration:             translation.NewTypedHandler(h.TextDocumentDeclaration),
-		MethodTextDocumentDefinition:              translation.NewTypedHandler(h.TextDocumentDefinition),
-		MethodTextDocumentTypeDefinition:          translation.NewTypedHandler(h.TextDocumentTypeDefinition),
-		MethodTextDocumentImplementation:          translation.NewTypedHandler(h.TextDocumentImplementation),
-		MethodTextDocumentReferences:              translation.NewTypedHandler(h.TextDocumentReferences),
-		MethodTextDocumentDocumentHighlight:       translation.NewTypedHandler(h.TextDocumentDocumentHighlight),
-		MethodTextDocumentDocumentSymbol:          translation.NewTypedHandler(h.TextDocumentDocumentSymbol),
-		MethodTextDocumentCodeAction:              translation.NewTypedHandler(h.TextDocumentCodeAction),
-		MethodCodeActionResolve:                   translation.NewTypedHandler(h.CodeActionResolve),
-		MethodTextDocumentCodeLens:                translation.NewTypedHandler(h.TextDocumentCodeLens),
-		MethodCodeLensResolve:                     translation.NewTypedHandler(h.CodeLensResolve),
-		MethodTextDocumentDocumentLink:            translation.NewTypedHandler(h.TextDocumentDocumentLink),
-		MethodDocumentLinkResolve:                 translation.NewTypedHandler(h.DocumentLinkResolve),
-		MethodTextDocumentColor:                   translation.NewTypedHandler(h.TextDocumentColor),
-		MethodTextDocumentColorPresentation:       translation.NewTypedHandler(h.TextDocumentColorPresentation),
-		MethodTextDocumentFormatting:              translation.NewTypedHandler(h.TextDocumentFormatting),
-		MethodTextDocumentRangeFormatting:         translation.NewTypedHandler(h.TextDocumentRangeFormatting),
-		MethodTextDocumentOnTypeFormatting:        translation.NewTypedHandler(h.TextDocumentOnTypeFormatting),
-		MethodTextDocumentRename:                  translation.NewTypedHandler(h.TextDocumentRename),
-		MethodTextDocumentPrepareRename:           translation.NewTypedHandler(h.TextDocumentPrepareRename),
-		MethodTextDocumentFoldingRange:            translation.NewTypedHandler(h.TextDocumentFoldingRange),
-		MethodTextDocumentSelectionRange:          translation.NewTypedHandler(h.TextDocumentSelectionRange),
-		MethodTextDocumentPrepareCallHierarchy:    translation.NewTypedHandler(h.TextDocumentPrepareCallHierarchy),
-		MethodCallHierarchyIncomingCalls:          translation.NewTypedHandler(h.CallHierarchyIncomingCalls),
-		MethodCallHierarchyOutgoingCalls:          translation.NewTypedHandler(h.CallHierarchyOutgoingCalls),
-		MethodTextDocumentSemanticTokensFull:      translation.NewTypedHandler(h.TextDocumentSemanticTokensFull),
-		MethodTextDocumentSemanticTokensFullDelta: translation.NewTypedHandler(h.TextDocumentSemanticTokensFullDelta),
-		MethodTextDocumentSemanticTokensRange:     translation.NewTypedHandler(h.TextDocumentSemanticTokensRange),
-		MethodTextDocumentLinkedEditingRange:      translation.NewTypedHandler(h.TextDocumentLinkedEditingRange),
-		MethodTextDocumentMoniker:                 translation.NewTypedHandler(h.TextDocumentMoniker),
-		MethodTextDocumentDiagnostic:              translation.NewTypedHandler(h.TextDocumentDiagnostic),
+			// Language Features
+			MethodTextDocumentCompletion:              translation.NewTypedHandler(h.TextDocumentCompletion),
+			MethodCompletionItemResolve:               translation.NewTypedHandler(h.CompletionItemResolve),
+			MethodTextDocumentHover:                   translation.NewTypedHandler(h.TextDocumentHover),
+			MethodTextDocumentSignatureHelp:           translation.NewTypedHandler(h.TextDocumentSignatureHelp),
+			MethodTextDocumentDeclaration:             translation.NewTypedHandler(h.TextDocumentDeclaration),
+			MethodTextDocumentDefinition:              translation.NewTypedHandler(h.TextDocumentDefinition),
+			MethodTextDocumentTypeDefinition:          translation.NewTypedHandler(h.TextDocumentTypeDefinition),
+			MethodTextDocumentImplementation:          translation.NewTypedHandler(h.TextDocumentImplementation),
+			MethodTextDocumentReferences:              translation.NewTypedHandler(h.TextDocumentReferences),
+			MethodTextDocumentDocumentHighlight:       translation.NewTypedHandler(h.TextDocumentDocumentHighlight),
+			MethodTextDocumentDocumentSymbol:          translation.NewTypedHandler(h.TextDocumentDocumentSymbol),
+			MethodTextDocumentCodeAction:              translation.NewTypedHandler(h.TextDocumentCodeAction),
+			MethodCodeActionResolve:                   translation.NewTypedHandler(h.CodeActionResolve),
+			MethodTextDocumentCodeLens:                translation.NewTypedHandler(h.TextDocumentCodeLens),
+			MethodCodeLensResolve:                     translation.NewTypedHandler(h.CodeLensResolve),
+			MethodTextDocumentDocumentLink:            translation.NewTypedHandler(h.TextDocumentDocumentLink),
+			MethodDocumentLinkResolve:                 translation.NewTypedHandler(h.DocumentLinkResolve),
+			MethodTextDocumentColor:                   translation.NewTypedHandler(h.TextDocumentColor),
+			MethodTextDocumentColorPresentation:       translation.NewTypedHandler(h.TextDocumentColorPresentation),
+			MethodTextDocumentFormatting:              translation.NewTypedHandler(h.TextDocumentFormatting),
+			MethodTextDocumentRangeFormatting:         translation.NewTypedHandler(h.TextDocumentRangeFormatting),
+			MethodTextDocumentOnTypeFormatting:        translation.NewTypedHandler(h.TextDocumentOnTypeFormatting),
+			MethodTextDocumentRename:                  translation.NewTypedHandler(h.TextDocumentRename),
+			MethodTextDocumentPrepareRename:           translation.NewTypedHandler(h.TextDocumentPrepareRename),
+			MethodTextDocumentFoldingRange:            translation.NewTypedHandler(h.TextDocumentFoldingRange),
+			MethodTextDocumentSelectionRange:          translation.NewTypedHandler(h.TextDocumentSelectionRange),
+			MethodTextDocumentPrepareCallHierarchy:    translation.NewTypedHandler(h.TextDocumentPrepareCallHierarchy),
+			MethodCallHierarchyIncomingCalls:          translation.NewTypedHandler(h.CallHierarchyIncomingCalls),
+			MethodCallHierarchyOutgoingCalls:          translation.NewTypedHandler(h.CallHierarchyOutgoingCalls),
+			MethodTextDocumentSemanticTokensFull:      translation.NewTypedHandler(h.TextDocumentSemanticTokensFull),
+			MethodTextDocumentSemanticTokensFullDelta: translation.NewTypedHandler(h.TextDocumentSemanticTokensFullDelta),
+			MethodTextDocumentSemanticTokensRange:     translation.NewTypedHandler(h.TextDocumentSemanticTokensRange),
+			MethodTextDocumentLinkedEditingRange:      translation.NewTypedHandler(h.TextDocumentLinkedEditingRange),
+			MethodTextDocumentMoniker:                 translation.NewTypedHandler(h.TextDocumentMoniker),
+			MethodTextDocumentDiagnostic:              translation.NewTypedHandler(h.TextDocumentDiagnostic),
+		}
 	}
-}
-
-func (h *Handler_317) GetCustomMethods() map[string]glsp.HandlerInterface {
-	var customMethods = make(map[string]glsp.HandlerInterface)
-	for method, handler := range h.CustomMethod {
-		customMethods[method] = translation.NewCustomHandler(handler.Func)
-	}
-	return customMethods
+	return h.handlerMap
 }
 
 func (h *Handler_317) IsInitialized() bool {

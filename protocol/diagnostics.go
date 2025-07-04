@@ -1,9 +1,5 @@
 package protocol
 
-import (
-	"github.com/tliron/glsp"
-)
-
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#textDocument_publishDiagnostics
 
 type PublishDiagnosticsClientCapabilities struct {
@@ -132,8 +128,6 @@ type DiagnosticRegistrationOptions struct {
 }
 
 const MethodTextDocumentDiagnostic = Method("textDocument/diagnostic")
-
-type TextDocumentDiagnosticFunc func(context *glsp.Context, params *DocumentDiagnosticParams) (any, error)
 
 /**
  * Parameters of the document diagnostic request.
