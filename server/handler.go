@@ -42,7 +42,7 @@ func (s *Server) handle(ctx context.Context, connection *jsonrpc2.Conn, request 
 	switch request.Method {
 	case "exit":
 		// We're giving the attached handler a chance to handle it first, but we'll ignore any result
-		s.HandlerHandle(&glspContext)
+		s.HandlerHandle(&glspContext) //nolint:errcheck
 		err := connection.Close()
 		return nil, err
 
