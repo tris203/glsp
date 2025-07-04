@@ -58,7 +58,7 @@ func (p Position) IndexIn(content string) int {
 
 	// In accordance with the LSP Spec:
 	// https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#textDocuments
-	// self.Character represents utf-16 code units, not bytes and so we need to
+	// p.Character represents utf-16 code units, not bytes and so we need to
 	// convert utf-16 code units to a byte offset.
 
 	// Find the byte offset for the line
@@ -73,7 +73,7 @@ func (p Position) IndexIn(content string) int {
 	}
 
 	// The index represents the byte offset from the beginning of the line
-	// count self.Character utf-16 code units from the index byte offset.
+	// count p.Character utf-16 code units from the index byte offset.
 
 	byteOffset := index
 	remains := content[index:]

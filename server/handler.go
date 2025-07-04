@@ -1,7 +1,7 @@
 package server
 
 import (
-	contextpkg "context"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -18,7 +18,7 @@ func (s *Server) newHandler() jsonrpc2.Handler {
 	return jsonrpc2.HandlerWithError(s.handle)
 }
 
-func (s *Server) handle(context contextpkg.Context, connection *jsonrpc2.Conn, request *jsonrpc2.Request) (any, error) {
+func (s *Server) handle(context context.Context, connection *jsonrpc2.Conn, request *jsonrpc2.Request) (any, error) {
 	glspContext := glsp.Context{
 		Method: request.Method,
 		Notify: func(method string, params any) {

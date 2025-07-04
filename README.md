@@ -36,14 +36,11 @@ Minimal Example
 package main
 
 import (
+	"log/slog"
+
 	"github.com/tliron/glsp"
 	protocol "github.com/tliron/glsp/protocol_3_16"
 	"github.com/tliron/glsp/server"
-	"github.com/tliron/commonlog"
-
-	// Must include a backend implementation
-	// See CommonLog for other options: https://github.com/tliron/commonlog
-	_ "github.com/tliron/commonlog/simple"
 )
 
 const lsName = "my language"
@@ -54,9 +51,6 @@ var (
 )
 
 func main() {
-	// This increases logging verbosity (optional)
-	commonlog.Configure(1, nil)
-
 	handler = protocol.Handler{
 		Initialize:  initialize,
 		Initialized: initialized,
@@ -64,7 +58,8 @@ func main() {
 		SetTrace:    setTrace,
 	}
 
-	server := server.NewServer(&handler, lsName, false)
+	logger := slog.Default().With("language-server", lsName)
+	server := server.NewServer(&handler, logger, false)
 
 	server.RunStdio()
 }

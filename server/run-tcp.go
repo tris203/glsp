@@ -1,18 +1,20 @@
 package server
 
-import (
-	"github.com/tliron/commonlog"
-)
-
-func (self *Server) RunTCP(address string) error {
-	listener, err := self.newNetworkListener("tcp", address)
+func (s *Server) RunTCP(address string) error {
+	listener, err := s.newNetworkListener("tcp", address)
 	if err != nil {
 		return err
 	}
 
-	log := commonlog.NewKeyValueLogger(self.Log, "address", address)
-	defer commonlog.CallAndLogError((*listener).Close, "listener.Close", log)
-	log.Notice("listening for TCP connections")
+	log := s.Log.With("address", address)
+	defer func() {
+		err := (*listener).Close()
+		if err != nil {
+			log.Error("error closing tcp connection", "error", err.Error())
+		}
+	}()
+
+	log.Info("listening for TCP connections", "address", address)
 
 	var connectionCount uint64
 
@@ -23,8 +25,8 @@ func (self *Server) RunTCP(address string) error {
 		}
 
 		connectionCount++
-		connectionLog := commonlog.NewKeyValueLogger(log, "id", connectionCount)
+		connectionLog := log.With("id", connectionCount)
 
-		go self.ServeStream(connection, connectionLog)
+		go s.ServeStream(connection, connectionLog)
 	}
 }

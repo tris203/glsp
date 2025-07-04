@@ -337,7 +337,7 @@ func (h *Handler_317) CreateServerCapabilities() ServerCapabilities_317 {
 		capabilities.SemanticTokensProvider.(*SemanticTokensOptions).Range = true
 	}
 
-	// TODO: self.TextDocumentSemanticTokensRefresh?
+	// TODO: h.TextDocumentSemanticTokensRefresh?
 
 	if h.TextDocumentMoniker != nil {
 		capabilities.MonikerProvider = true
