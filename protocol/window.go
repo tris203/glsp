@@ -2,8 +2,6 @@ package protocol
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#window_showMessage
 
-const ServerWindowShowMessage = Method("window/showMessage")
-
 type ShowMessageParams struct {
 	/**
 	 * The message type. See {@link MessageType}.
@@ -56,8 +54,6 @@ type ShowMessageRequestClientCapabilities struct {
 	} `json:"messageActionItem,omitempty"`
 }
 
-const ServerWindowShowMessageRequest = Method("window/showMessageRequest")
-
 type ShowMessageRequestParams struct {
 	/**
 	 * The message type. See {@link MessageType}
@@ -96,8 +92,6 @@ type ShowDocumentClientCapabilities struct {
 	 */
 	Support bool `json:"support"`
 }
-
-const ServerWindowShowDocument = Method("window/showDocument")
 
 /**
  * Params to show a document.
@@ -148,8 +142,6 @@ type ShowDocumentResult struct {
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#window_logMessage
 
-const ServerWindowLogMessage = Method("window/logMessage")
-
 type LogMessageParams struct {
 	/**
 	 * The message type. See {@link MessageType}
@@ -164,8 +156,6 @@ type LogMessageParams struct {
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#window_workDoneProgress_create
 
-const ServerWindowWorkDoneProgressCreate = Method("window/workDoneProgress/create")
-
 type WorkDoneProgressCreateParams struct {
 	/**
 	 * The token to be used to report progress.
@@ -174,8 +164,6 @@ type WorkDoneProgressCreateParams struct {
 }
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#window_workDoneProgress_cancel
-
-const MethodWindowWorkDoneProgressCancel = Method("window/workDoneProgress/cancel")
 
 type WorkDoneProgressCancelParams struct {
 	/**

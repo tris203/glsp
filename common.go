@@ -8,9 +8,9 @@ import (
 type LspProtocolVersion int
 
 const (
-	Protocol_3_16 LspProtocolVersion = iota
-	Protocol_3_17
-	Protocol_3_18
+	Protocol_316 LspProtocolVersion = iota
+	Protocol_317
+	Protocol_318
 )
 
 type NotifyFunc func(method string, params any)

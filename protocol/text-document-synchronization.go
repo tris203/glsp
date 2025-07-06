@@ -32,8 +32,6 @@ const (
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#textDocument_didOpen
 
-const MethodTextDocumentDidOpen = Method("textDocument/didOpen")
-
 type DidOpenTextDocumentParams struct {
 	/**
 	 * The document that was opened.
@@ -55,8 +53,6 @@ type TextDocumentChangeRegistrationOptions struct {
 	 */
 	SyncKind TextDocumentSyncKind `json:"syncKind"`
 }
-
-const MethodTextDocumentDidChange = Method("textDocument/didChange")
 
 type DidChangeTextDocumentParams struct {
 	/**
@@ -148,8 +144,6 @@ type TextDocumentContentChangeEventWhole struct {
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#textDocument_willSave
 
-const MethodTextDocumentWillSave = Method("textDocument/willSave")
-
 /**
  * The parameters send in a will save text document notification.
  */
@@ -190,8 +184,6 @@ const (
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#textDocument_willSaveWaitUntil
 
-const MethodTextDocumentWillSaveWaitUntil = Method("textDocument/willSaveWaitUntil")
-
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#textDocument_didSave
 
 type SaveOptions struct {
@@ -209,8 +201,6 @@ type TextDocumentSaveRegistrationOptions struct {
 	 */
 	IncludeText *bool `json:"includeText"`
 }
-
-const MethodTextDocumentDidSave = Method("textDocument/didSave")
 
 type DidSaveTextDocumentParams struct {
 	/**
@@ -320,8 +310,6 @@ func (t *TextDocumentSyncOptions) UnmarshalJSON(data []byte) error {
 		return err
 	}
 }
-
-const MethodTextDocumentDidClose = Method("textDocument/didClose")
 
 type DidCloseTextDocumentParams struct {
 	/**

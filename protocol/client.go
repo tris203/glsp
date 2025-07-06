@@ -23,8 +23,6 @@ type Registration struct {
 	RegisterOptions any `json:"registerOptions,omitempty"`
 }
 
-const ServerClientRegisterCapability = Method("client/registerCapability")
-
 type RegistrationParams struct {
 	Registrations []Registration `json:"registrations"`
 }
@@ -46,8 +44,6 @@ type Unregistration struct {
 	 */
 	Method string `json:"method"`
 }
-
-const ServerClientUnregisterCapability = Method("client/unregisterCapability")
 
 type UnregistrationParams struct {
 	// This should correctly be named `unregistrations`. However changing this

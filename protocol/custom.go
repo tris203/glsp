@@ -1,3 +1,4 @@
+//go:generate go run ../tools/genprotocol/main.go
 package protocol
 
 import (

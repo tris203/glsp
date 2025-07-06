@@ -168,7 +168,6 @@ func TestMethodConstants(t *testing.T) {
 		{MethodInitialized, "initialized"},
 		{MethodShutdown, "shutdown"},
 		{MethodExit, "exit"},
-		{MethodLogTrace, "$/logTrace"},
 		{MethodSetTrace, "$/setTrace"},
 	}
 

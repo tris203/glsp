@@ -161,8 +161,6 @@ type CompletionRegistrationOptions struct {
 	CompletionOptions
 }
 
-const MethodTextDocumentCompletion = Method("textDocument/completion")
-
 // Returns: []CompletionItem | CompletionList | nil
 
 type CompletionParams struct {
@@ -586,8 +584,6 @@ const (
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#completionItem_resolve
 
-const MethodCompletionItemResolve = Method("completionItem/resolve")
-
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#textDocument_hover
 
 type HoverClientCapabilities struct {
@@ -612,8 +608,6 @@ type HoverRegistrationOptions struct {
 	TextDocumentRegistrationOptions
 	HoverOptions
 }
-
-const MethodTextDocumentHover = Method("textDocument/hover")
 
 type HoverParams struct {
 	TextDocumentPositionParams
@@ -793,8 +787,6 @@ type SignatureHelpRegistrationOptions struct {
 	TextDocumentRegistrationOptions
 	SignatureHelpOptions
 }
-
-const MethodTextDocumentSignatureHelp = Method("textDocument/signatureHelp")
 
 type SignatureHelpParams struct {
 	TextDocumentPositionParams
@@ -1069,8 +1061,6 @@ type DeclarationRegistrationOptions struct {
 	StaticRegistrationOptions
 }
 
-const MethodTextDocumentDeclaration = Method("textDocument/declaration")
-
 // Returns: Location | []Location | []LocationLink | nil
 
 type DeclarationParams struct {
@@ -1103,8 +1093,6 @@ type DefinitionRegistrationOptions struct {
 	TextDocumentRegistrationOptions
 	DefinitionOptions
 }
-
-const MethodTextDocumentDefinition = Method("textDocument/definition")
 
 // Returns: Location | []Location | []LocationLink | nil
 
@@ -1142,8 +1130,6 @@ type TypeDefinitionRegistrationOptions struct {
 	StaticRegistrationOptions
 }
 
-const MethodTextDocumentTypeDefinition = Method("textDocument/typeDefinition")
-
 // Returns: Location | []Location | []LocationLink | nil
 
 type TypeDefinitionParams struct {
@@ -1180,8 +1166,6 @@ type ImplementationRegistrationOptions struct {
 	StaticRegistrationOptions
 }
 
-const MethodTextDocumentImplementation = Method("textDocument/implementation")
-
 // Returns: Location | []Location | []LocationLink | nil
 
 type ImplementationParams struct {
@@ -1207,8 +1191,6 @@ type ReferenceRegistrationOptions struct {
 	TextDocumentRegistrationOptions
 	ReferenceOptions
 }
-
-const MethodTextDocumentReferences = Method("textDocument/references")
 
 type ReferenceParams struct {
 	TextDocumentPositionParams
@@ -1242,8 +1224,6 @@ type DocumentHighlightRegistrationOptions struct {
 	TextDocumentRegistrationOptions
 	DocumentHighlightOptions
 }
-
-const MethodTextDocumentDocumentHighlight = Method("textDocument/documentHighlight")
 
 type DocumentHighlightParams struct {
 	TextDocumentPositionParams
@@ -1361,8 +1341,6 @@ type DocumentSymbolRegistrationOptions struct {
 	TextDocumentRegistrationOptions
 	DocumentSymbolOptions
 }
-
-const MethodTextDocumentDocumentSymbol = Method("textDocument/documentSymbol")
 
 // Returns: []DocumentSymbol | []SymbolInformation | nil
 
@@ -1636,8 +1614,6 @@ type CodeActionRegistrationOptions struct {
 	CodeActionOptions
 }
 
-const MethodTextDocumentCodeAction = Method("textDocument/codeAction")
-
 // Returns: Command | []CodeAction | nil
 
 /**
@@ -1859,8 +1835,6 @@ type CodeAction struct {
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#codeAction_resolve
 
-const MethodCodeActionResolve = Method("codeAction/resolve")
-
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#textDocument_codeLens
 
 type CodeLensClientCapabilities struct {
@@ -1883,8 +1857,6 @@ type CodeLensRegistrationOptions struct {
 	TextDocumentRegistrationOptions
 	CodeLensOptions
 }
-
-const MethodTextDocumentCodeLens = Method("textDocument/codeLens")
 
 type CodeLensParams struct {
 	WorkDoneProgressParams
@@ -1925,8 +1897,6 @@ type CodeLens struct {
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#codeLens_resolve
 
-const MethodCodeLensResolve = Method("codeLens/resolve")
-
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#codeLens_refresh
 
 type CodeLensWorkspaceClientCapabilities struct {
@@ -1941,8 +1911,6 @@ type CodeLensWorkspaceClientCapabilities struct {
 	 */
 	RefreshSupport *bool `json:"refreshSupport,omitempty"`
 }
-
-const ServerWorkspaceCodeLensRefresh = Method("workspace/codeLens/refresh")
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#textDocument_documentLink
 
@@ -1973,8 +1941,6 @@ type DocumentLinkRegistrationOptions struct {
 	TextDocumentRegistrationOptions
 	DocumentLinkOptions
 }
-
-const MethodTextDocumentDocumentLink = Method("textDocument/documentLink")
 
 type DocumentLinkParams struct {
 	WorkDoneProgressParams
@@ -2022,8 +1988,6 @@ type DocumentLink struct {
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#documentLink_resolve
 
-const MethodDocumentLinkResolve = Method("documentLink/resolve")
-
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#textDocument_documentColor
 
 type DocumentColorClientCapabilities struct {
@@ -2042,8 +2006,6 @@ type DocumentColorRegistrationOptions struct {
 	StaticRegistrationOptions
 	DocumentColorOptions
 }
-
-const MethodTextDocumentColor = Method("textDocument/documentColor")
 
 type DocumentColorParams struct {
 	WorkDoneProgressParams
@@ -2093,8 +2055,6 @@ type Color struct {
 }
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#textDocument_colorPresentation
-
-const MethodTextDocumentColorPresentation = Method("textDocument/colorPresentation")
 
 type ColorPresentationParams struct {
 	WorkDoneProgressParams
@@ -2156,8 +2116,6 @@ type DocumentFormattingRegistrationOptions struct {
 	TextDocumentRegistrationOptions
 	DocumentFormattingOptions
 }
-
-const MethodTextDocumentFormatting = Method("textDocument/formatting")
 
 type DocumentFormattingParams struct {
 	WorkDoneProgressParams
@@ -2229,8 +2187,6 @@ type DocumentRangeFormattingRegistrationOptions struct {
 	DocumentRangeFormattingOptions
 }
 
-const MethodTextDocumentRangeFormatting = Method("textDocument/rangeFormatting")
-
 type DocumentRangeFormattingParams struct {
 	WorkDoneProgressParams
 
@@ -2275,8 +2231,6 @@ type DocumentOnTypeFormattingRegistrationOptions struct {
 	TextDocumentRegistrationOptions
 	DocumentOnTypeFormattingOptions
 }
-
-const MethodTextDocumentOnTypeFormatting = Method("textDocument/onTypeFormatting")
 
 type DocumentOnTypeFormattingParams struct {
 	TextDocumentPositionParams
@@ -2354,8 +2308,6 @@ type RenameRegistrationOptions struct {
 	RenameOptions
 }
 
-const MethodTextDocumentRename = Method("textDocument/rename")
-
 type RenameParams struct {
 	TextDocumentPositionParams
 	WorkDoneProgressParams
@@ -2369,8 +2321,6 @@ type RenameParams struct {
 }
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#textDocument_prepareRename
-
-const MethodTextDocumentPrepareRename = Method("textDocument/prepareRename")
 
 // Returns: Range | RangeWithPlaceholder | DefaultBehavior | nil
 
@@ -2422,8 +2372,6 @@ type FoldingRangeRegistrationOptions struct {
 	FoldingRangeOptions
 	StaticRegistrationOptions
 }
-
-const MethodTextDocumentFoldingRange = Method("textDocument/foldingRange")
 
 type FoldingRangeParams struct {
 	WorkDoneProgressParams
@@ -2520,8 +2468,6 @@ type SelectionRangeRegistrationOptions struct {
 	StaticRegistrationOptions
 }
 
-const MethodTextDocumentSelectionRange = Method("textDocument/selectionRange")
-
 type SelectionRangeParams struct {
 	WorkDoneProgressParams
 	PartialResultParams
@@ -2571,8 +2517,6 @@ type CallHierarchyRegistrationOptions struct {
 	CallHierarchyOptions
 	StaticRegistrationOptions
 }
-
-const MethodTextDocumentPrepareCallHierarchy = Method("textDocument/prepareCallHierarchy")
 
 type CallHierarchyPrepareParams struct {
 	TextDocumentPositionParams
@@ -2627,8 +2571,6 @@ type CallHierarchyItem struct {
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#callHierarchy_incomingCalls
 
-const MethodCallHierarchyIncomingCalls = Method("callHierarchy/incomingCalls")
-
 type CallHierarchyIncomingCallsParams struct {
 	WorkDoneProgressParams
 	PartialResultParams
@@ -2650,8 +2592,6 @@ type CallHierarchyIncomingCall struct {
 }
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#callHierarchy_outgoingCalls
-
-const MethodCallHierarchyOutgoingCalls = Method("callHierarchy/outgoingCalls")
 
 type CallHierarchyOutgoingCallsParams struct {
 	WorkDoneProgressParams
@@ -2930,8 +2870,6 @@ type SemanticTokensRegistrationOptions struct {
 	StaticRegistrationOptions
 }
 
-const MethodTextDocumentSemanticTokensFull = Method("textDocument/semanticTokens/full")
-
 type SemanticTokensParams struct {
 	WorkDoneProgressParams
 	PartialResultParams
@@ -2960,8 +2898,6 @@ type SemanticTokens struct {
 type SemanticTokensPartialResult struct {
 	Data []UInteger `json:"data"`
 }
-
-const MethodTextDocumentSemanticTokensFullDelta = Method("textDocument/semanticTokens/full/delta")
 
 // Returns: SemanticTokens | SemanticTokensDelta | SemanticTokensDeltaPartialResult | nil
 
@@ -3012,8 +2948,6 @@ type SemanticTokensDeltaPartialResult struct {
 	Edits []SemanticTokensEdit `json:"edits"`
 }
 
-const MethodTextDocumentSemanticTokensRange = Method("textDocument/semanticTokens/range")
-
 // Returns: SemanticTokens | SemanticTokensPartialResult | nil
 
 type SemanticTokensRangeParams struct {
@@ -3052,8 +2986,6 @@ type LinkedEditingRangeRegistrationOptions struct {
 	LinkedEditingRangeOptions
 	StaticRegistrationOptions
 }
-
-const MethodTextDocumentLinkedEditingRange = Method("textDocument/linkedEditingRange")
 
 type LinkedEditingRangeParams struct {
 	TextDocumentPositionParams
@@ -3095,8 +3027,6 @@ type MonikerRegistrationOptions struct {
 	TextDocumentRegistrationOptions
 	MonikerOptions
 }
-
-const MethodTextDocumentMoniker = Method("textDocument/moniker")
 
 type MonikerParams struct {
 	TextDocumentPositionParams

@@ -46,8 +46,6 @@ type PublishDiagnosticsClientCapabilities struct {
 	DataSupport *bool `json:"dataSupport,omitempty"`
 }
 
-const ServerTextDocumentPublishDiagnostics = Method("textDocument/publishDiagnostics")
-
 type PublishDiagnosticsParams struct {
 	/**
 	 * The URI for which diagnostic information is reported.
@@ -126,8 +124,6 @@ type DiagnosticRegistrationOptions struct {
 	DiagnosticOptions
 	StaticRegistrationOptions
 }
-
-const MethodTextDocumentDiagnostic = Method("textDocument/diagnostic")
 
 /**
  * Parameters of the document diagnostic request.

@@ -25,7 +25,7 @@ func (m *mockHandlerInterface) Handle(ctx *glsp.Context, params []byte) (any, er
 func TestServer_HandlerHandle_NotInitialized(t *testing.T) {
 	handler := &mockHandler{
 		initialized:   false,
-		version:       glsp.Protocol_3_16,
+		version:       glsp.Protocol_316,
 		methodMap:     make(map[string]glsp.HandlerInterface),
 		customMethods: make(map[string]glsp.HandlerInterface),
 	}
@@ -60,7 +60,7 @@ func TestServer_HandlerHandle_InitializeMethod(t *testing.T) {
 
 	handler := &mockHandler{
 		initialized: false,
-		version:     glsp.Protocol_3_16,
+		version:     glsp.Protocol_316,
 		methodMap: map[string]glsp.HandlerInterface{
 			protocol.MethodInitialize: mockHandlerIface,
 		},
@@ -95,7 +95,7 @@ func TestServer_HandlerHandle_InitializeMethod(t *testing.T) {
 func TestServer_HandlerHandle_MethodNotFound(t *testing.T) {
 	handler := &mockHandler{
 		initialized:   true,
-		version:       glsp.Protocol_3_16,
+		version:       glsp.Protocol_316,
 		methodMap:     make(map[string]glsp.HandlerInterface),
 		customMethods: make(map[string]glsp.HandlerInterface),
 	}
@@ -139,7 +139,7 @@ func TestServer_HandlerHandle_CustomMethod(t *testing.T) {
 
 	handler := &mockHandler{
 		initialized: true,
-		version:     glsp.Protocol_3_16,
+		version:     glsp.Protocol_316,
 		methodMap:   make(map[string]glsp.HandlerInterface),
 		customMethods: map[string]glsp.HandlerInterface{
 			"custom/method": mockHandlerIface,
@@ -177,7 +177,7 @@ func TestServer_HandlerHandle_HandlerError(t *testing.T) {
 
 	handler := &mockHandler{
 		initialized: true,
-		version:     glsp.Protocol_3_16,
+		version:     glsp.Protocol_316,
 		methodMap: map[string]glsp.HandlerInterface{
 			"test/method": mockHandlerIface,
 		},
@@ -218,7 +218,7 @@ func TestServer_HandlerHandle_UnmarshalError(t *testing.T) {
 
 	handler := &mockHandler{
 		initialized: true,
-		version:     glsp.Protocol_3_16,
+		version:     glsp.Protocol_316,
 		methodMap: map[string]glsp.HandlerInterface{
 			"test/method": mockHandlerIface,
 		},
@@ -253,7 +253,7 @@ func TestServer_HandlerHandle_SuccessfulMethod(t *testing.T) {
 
 	handler := &mockHandler{
 		initialized: true,
-		version:     glsp.Protocol_3_16,
+		version:     glsp.Protocol_316,
 		methodMap: map[string]glsp.HandlerInterface{
 			"test/method": mockHandlerIface,
 		},

@@ -7,14 +7,14 @@ import (
 )
 
 func TestLspProtocolVersionConstants(t *testing.T) {
-	if Protocol_3_16 != 0 {
-		t.Errorf("Protocol_3_16 should be 0, got %d", Protocol_3_16)
+	if Protocol_316 != 0 {
+		t.Errorf("Protocol_316 should be 0, got %d", Protocol_316)
 	}
-	if Protocol_3_17 != 1 {
-		t.Errorf("Protocol_3_17 should be 1, got %d", Protocol_3_17)
+	if Protocol_317 != 1 {
+		t.Errorf("Protocol_317 should be 1, got %d", Protocol_317)
 	}
-	if Protocol_3_18 != 2 {
-		t.Errorf("Protocol_3_18 should be 2, got %d", Protocol_3_18)
+	if Protocol_318 != 2 {
+		t.Errorf("Protocol_318 should be 2, got %d", Protocol_318)
 	}
 }
 
@@ -24,14 +24,14 @@ func TestContext(t *testing.T) {
 		Method:           "test/method",
 		Params:           params,
 		Context:          context.Background(),
-		Protocol_Version: Protocol_3_16,
+		Protocol_Version: Protocol_316,
 	}
 
 	if ctx.Method != "test/method" {
 		t.Errorf("Expected method 'test/method', got '%s'", ctx.Method)
 	}
-	if ctx.Protocol_Version != Protocol_3_16 {
-		t.Errorf("Expected protocol version %d, got %d", Protocol_3_16, ctx.Protocol_Version)
+	if ctx.Protocol_Version != Protocol_316 {
+		t.Errorf("Expected protocol version %d, got %d", Protocol_316, ctx.Protocol_Version)
 	}
 	if ctx.Context == nil {
 		t.Error("Context should not be nil")

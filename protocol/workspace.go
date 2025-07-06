@@ -2,8 +2,6 @@ package protocol
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#workspace_workspaceFolders
 
-const ServerWorkspaceWorkspaceFolders = Method("workspace/workspaceFolders")
-
 type WorkspaceFoldersServerCapabilities struct {
 	/**
 	 * The server has support for workspace folders
@@ -37,8 +35,6 @@ type WorkspaceFolder struct {
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#workspace_didChangeWorkspaceFolders
 
-const MethodWorkspaceDidChangeWorkspaceFolders = Method("workspace/didChangeWorkspaceFolders")
-
 type DidChangeWorkspaceFoldersParams struct {
 	/**
 	 * The actual workspace folder change event.
@@ -70,8 +66,6 @@ type DidChangeConfigurationClientCapabilities struct {
 	DynamicRegistration *bool `json:"dynamicRegistration,omitempty"`
 }
 
-const MethodWorkspaceDidChangeConfiguration = Method("workspace/didChangeConfiguration")
-
 type DidChangeConfigurationParams struct {
 	/**
 	 * The actual changed settings
@@ -80,8 +74,6 @@ type DidChangeConfigurationParams struct {
 }
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#workspace_configuration
-
-const ServerWorkspaceConfiguration = Method("workspace/configuration")
 
 type ConfigurationParams struct {
 	Items []ConfigurationItem `json:"items"`
@@ -162,8 +154,6 @@ const (
 	 */
 	WatchKindDelete = UInteger(4)
 )
-
-const MethodWorkspaceDidChangeWatchedFiles = Method("workspace/didChangeWatchedFiles")
 
 type DidChangeWatchedFilesParams struct {
 	/**
@@ -254,8 +244,6 @@ type WorkspaceSymbolRegistrationOptions struct {
 	WorkspaceSymbolOptions
 }
 
-const MethodWorkspaceSymbol = Method("workspace/symbol")
-
 type WorkspaceSymbolParams struct {
 	WorkDoneProgressParams
 	PartialResultParams
@@ -292,8 +280,6 @@ type ExecuteCommandRegistrationOptions struct {
 	ExecuteCommandOptions
 }
 
-const MethodWorkspaceExecuteCommand = Method("workspace/executeCommand")
-
 type ExecuteCommandParams struct {
 	WorkDoneProgressParams
 
@@ -309,8 +295,6 @@ type ExecuteCommandParams struct {
 }
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#workspace_applyEdit
-
-const ServerWorkspaceApplyEdit = Method("workspace/applyEdit")
 
 type ApplyWorkspaceEditParams struct {
 	/**
@@ -448,8 +432,6 @@ type FileOperationFilter struct {
 	Pattern FileOperationPattern `json:"pattern"`
 }
 
-const MethodWorkspaceWillCreateFiles = Method("workspace/willCreateFiles")
-
 /**
  * The parameters sent in notifications/requests for user-initiated creation
  * of files.
@@ -477,11 +459,7 @@ type FileCreate struct {
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#workspace_didCreateFiles
 
-const MethodWorkspaceDidCreateFiles = Method("workspace/didCreateFiles")
-
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#workspace_willRenameFiles
-
-const MethodWorkspaceWillRenameFiles = Method("workspace/willRenameFiles")
 
 /**
  * The parameters sent in notifications/requests for user-initiated renames
@@ -516,11 +494,7 @@ type FileRename struct {
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#workspace_didRenameFiles
 
-const MethodWorkspaceDidRenameFiles = Method("workspace/didRenameFiles")
-
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#workspace_willDeleteFiles
-
-const MethodWorkspaceWillDeleteFiles = Method("workspace/willDeleteFiles")
 
 /**
  * The parameters sent in notifications/requests for user-initiated deletes
@@ -549,10 +523,7 @@ type FileDelete struct {
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#workspace_didDeleteFiles
 
-const MethodWorkspaceDidDeleteFiles = Method("workspace/didDeleteFiles")
-
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16/#textDocument_semanticTokens
-const MethodWorkspaceSemanticTokensRefresh = Method("workspace/semanticTokens/refresh")
 
 type SemanticTokensWorkspaceClientCapabilities struct {
 	/**

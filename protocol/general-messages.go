@@ -8,8 +8,6 @@ import (
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#initialize
 
-const MethodInitialize = Method("initialize")
-
 type InitializeParams_316 struct {
 	WorkDoneProgressParams
 
@@ -1100,21 +1098,13 @@ func (s *ServerCapabilities_316) UnmarshalJSON(data []byte) error {
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#initialized
 
-const MethodInitialized = Method("initialized")
-
 type InitializedParams struct{}
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#shutdown
 
-const MethodShutdown = Method("shutdown")
-
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#exit
 
-const MethodExit = Method("exit")
-
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#logTrace
-
-const MethodLogTrace = Method("$/logTrace")
 
 type LogTraceParams struct {
 	/**
@@ -1130,8 +1120,6 @@ type LogTraceParams struct {
 }
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#setTrace
-
-const MethodSetTrace = Method("$/setTrace")
 
 type SetTraceParams struct {
 	/**

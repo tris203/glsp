@@ -38,7 +38,7 @@ func (m *mockHandler) GetCustomMethods() map[string]glsp.HandlerInterface {
 
 func TestNewServer(t *testing.T) {
 	handler := &mockHandler{
-		version:       glsp.Protocol_3_16,
+		version:       glsp.Protocol_316,
 		methodMap:     make(map[string]glsp.HandlerInterface),
 		customMethods: make(map[string]glsp.HandlerInterface),
 	}

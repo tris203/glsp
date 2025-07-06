@@ -10,8 +10,6 @@ import (
 var True bool = true
 var False bool = false
 
-type Method = string
-
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#number
 
 /**
@@ -96,8 +94,6 @@ func (b BoolOrString) String() string {
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#cancelRequest
 
-const MethodCancelRequest = Method("$/cancelRequest")
-
 type CancelParams struct {
 	/**
 	 * The request id to cancel.
@@ -106,8 +102,6 @@ type CancelParams struct {
 }
 
 // https://microsoft.github.io/language-server-protocol/specifications/specification-3-16#progress
-
-const MethodProgress = Method("$/progress")
 
 type RequestFunc[P any, R any] func(context *glsp.Context, params *P) (R, error)
 type NotificationFunc[P any] func(context *glsp.Context, params *P) error
