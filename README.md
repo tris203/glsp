@@ -1,7 +1,6 @@
-*This is an early release. Some features are not yet fully implemented.*
+_This is an early release. Some features are not yet fully implemented._
 
-GLSP
-====
+# GLSP
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Go Reference](https://pkg.go.dev/badge/github.com/tliron/glsp.svg)](https://pkg.go.dev/github.com/tliron/kutglspil)
@@ -11,26 +10,22 @@ GLSP
 
 It enables you to more easily implement language servers by writing them in Go. GLSP contains:
 
-1) all the message structures for easy serialization,
-2) a handler for all client methods, and
-3) a ready-to-run JSON-RPC 2.0 server supporting stdio, TCP, WebSockets, and Node.js IPC.
+1. all the message structures for easy serialization,
+2. a handler for all client methods, and
+3. a ready-to-run JSON-RPC 2.0 server supporting stdio, TCP, WebSockets, and Node.js IPC.
 
 All you need to do, then, is provide the features for the language you want to support.
 
 Projects using GLSP:
 
-* [Puccini TOSCA Language Server](https://github.com/tliron/puccini-language-server)
-* [zk](https://github.com/mickael-menu/zk)
+- [Puccini TOSCA Language Server](https://github.com/tliron/puccini-language-server)
+- [zk](https://github.com/mickael-menu/zk)
 
+## References
 
-References
-----------
+- [go-lsp](https://github.com/sourcegraph/go-lsp) is another implementation with reduced coverage of the protocol
 
-* [go-lsp](https://github.com/sourcegraph/go-lsp) is another implementation with reduced coverage of the protocol
-
-
-Minimal Example
----------------
+## Minimal Example
 
 ```go
 package main
@@ -68,14 +63,14 @@ func main() {
 	server.RunStdio()
 }
 
-func initialize(context *glsp.Context, params *protocol.InitializeParams_316) (protocol.InitializeResult_316, error) {
+func initialize(context *glsp.Context, params *protocol.InitializeParams) (protocol.InitializeResult, error) {
 	capabilities := protocol.CreateServerCapabilities(&handler)
 
-	return protocol.InitializeResult_316{
+	return protocol.InitializeResult{
 		Capabilities: capabilities,
-		ServerInfo: &protocol.InitializeResultServerInfo{
+		ServerInfo: &protocol.ServerInfo{
 			Name:    lsName,
-			Version: &version,
+			Version: version,
 		},
 	}, nil
 }
@@ -85,7 +80,7 @@ func initialized(context *glsp.Context, params *protocol.InitializedParams) erro
 }
 
 func shutdown(context *glsp.Context) error {
-	protocol.SetTraceValue(protocol.TraceValueOff)
+	protocol.SetTraceValue(protocol.Off)
 	return nil
 }
 
