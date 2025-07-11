@@ -9,7 +9,7 @@ import (
 	translation "github.com/tliron/glsp/protocol/translation"
 )
 
-func (h *Handler_316) GetMethodMap() map[LSPMethod]glsp.HandlerInterface {
+func (h *Handler_318) GetMethodMap() map[LSPMethod]glsp.HandlerInterface {
 	h.lock.Lock()
 	defer h.lock.Unlock()
 	if h.handlerMap == nil {
@@ -24,6 +24,11 @@ func (h *Handler_316) GetMethodMap() map[LSPMethod]glsp.HandlerInterface {
 			MethodExit:                                translation.NewContextOnlyHandler(h.Exit),
 			MethodInitialize:                          translation.NewTypedHandler(h.Initialize),
 			MethodInitialized:                         translation.NewNotificationHandler(h.Initialized),
+			MethodInlayHintResolve:                    translation.NewTypedHandler(h.InlayHintResolve),
+			MethodNotebookDocumentDidChange:           translation.NewNotificationHandler(h.NotebookDocumentDidChange),
+			MethodNotebookDocumentDidClose:            translation.NewNotificationHandler(h.NotebookDocumentDidClose),
+			MethodNotebookDocumentDidOpen:             translation.NewNotificationHandler(h.NotebookDocumentDidOpen),
+			MethodNotebookDocumentDidSave:             translation.NewNotificationHandler(h.NotebookDocumentDidSave),
 			MethodProgress:                            translation.NewNotificationHandler(h.Progress),
 			MethodSetTrace:                            translation.NewNotificationHandler(h.SetTrace),
 			MethodShutdown:                            translation.NewContextOnlyHandler(h.Shutdown),
@@ -33,6 +38,7 @@ func (h *Handler_316) GetMethodMap() map[LSPMethod]glsp.HandlerInterface {
 			MethodTextDocumentCompletion:              translation.NewTypedHandler(h.TextDocumentCompletion),
 			MethodTextDocumentDeclaration:             translation.NewTypedHandler(h.TextDocumentDeclaration),
 			MethodTextDocumentDefinition:              translation.NewTypedHandler(h.TextDocumentDefinition),
+			MethodTextDocumentDiagnostic:              translation.NewTypedHandler(h.TextDocumentDiagnostic),
 			MethodTextDocumentDidChange:               translation.NewNotificationHandler(h.TextDocumentDidChange),
 			MethodTextDocumentDidClose:                translation.NewNotificationHandler(h.TextDocumentDidClose),
 			MethodTextDocumentDidOpen:                 translation.NewNotificationHandler(h.TextDocumentDidOpen),
@@ -45,6 +51,9 @@ func (h *Handler_316) GetMethodMap() map[LSPMethod]glsp.HandlerInterface {
 			MethodTextDocumentFormatting:              translation.NewTypedHandler(h.TextDocumentFormatting),
 			MethodTextDocumentHover:                   translation.NewTypedHandler(h.TextDocumentHover),
 			MethodTextDocumentImplementation:          translation.NewTypedHandler(h.TextDocumentImplementation),
+			MethodTextDocumentInlayHint:               translation.NewTypedHandler(h.TextDocumentInlayHint),
+			MethodTextDocumentInlineCompletion:        translation.NewTypedHandler(h.TextDocumentInlineCompletion),
+			MethodTextDocumentInlineValue:             translation.NewTypedHandler(h.TextDocumentInlineValue),
 			MethodTextDocumentLinkedEditingRange:      translation.NewTypedHandler(h.TextDocumentLinkedEditingRange),
 			MethodTextDocumentMoniker:                 translation.NewTypedHandler(h.TextDocumentMoniker),
 			MethodTextDocumentOnTypeFormatting:        translation.NewTypedHandler(h.TextDocumentOnTypeFormatting),
@@ -62,6 +71,7 @@ func (h *Handler_316) GetMethodMap() map[LSPMethod]glsp.HandlerInterface {
 			MethodTextDocumentWillSave:                translation.NewNotificationHandler(h.TextDocumentWillSave),
 			MethodTextDocumentWillSaveWaitUntil:       translation.NewTypedHandler(h.TextDocumentWillSaveWaitUntil),
 			MethodWindowWorkDoneProgressCancel:        translation.NewNotificationHandler(h.WindowWorkDoneProgressCancel),
+			MethodWorkspaceDiagnostic:                 translation.NewTypedHandler(h.WorkspaceDiagnostic),
 			MethodWorkspaceDidChangeConfiguration:     translation.NewNotificationHandler(h.WorkspaceDidChangeConfiguration),
 			MethodWorkspaceDidChangeWatchedFiles:      translation.NewNotificationHandler(h.WorkspaceDidChangeWatchedFiles),
 			MethodWorkspaceDidChangeWorkspaceFolders:  translation.NewNotificationHandler(h.WorkspaceDidChangeWorkspaceFolders),
@@ -70,6 +80,7 @@ func (h *Handler_316) GetMethodMap() map[LSPMethod]glsp.HandlerInterface {
 			MethodWorkspaceDidRenameFiles:             translation.NewNotificationHandler(h.WorkspaceDidRenameFiles),
 			MethodWorkspaceExecuteCommand:             translation.NewTypedHandler(h.WorkspaceExecuteCommand),
 			MethodWorkspaceSymbol:                     translation.NewTypedHandler(h.WorkspaceSymbol),
+			MethodWorkspaceSymbolResolve:              translation.NewTypedHandler(h.WorkspaceSymbolResolve),
 			MethodWorkspaceWillCreateFiles:            translation.NewTypedHandler(h.WorkspaceWillCreateFiles),
 			MethodWorkspaceWillDeleteFiles:            translation.NewTypedHandler(h.WorkspaceWillDeleteFiles),
 			MethodWorkspaceWillRenameFiles:            translation.NewTypedHandler(h.WorkspaceWillRenameFiles),
@@ -77,16 +88,16 @@ func (h *Handler_316) GetMethodMap() map[LSPMethod]glsp.HandlerInterface {
 	}
 	return h.handlerMap
 }
-func (h *Handler_316) IsInitialized() bool {
+func (h *Handler_318) IsInitialized() bool {
 	h.lock.Lock()
 	defer h.lock.Unlock()
 	return h.initialized
 }
-func (h *Handler_316) SetInitialized(initialized bool) {
+func (h *Handler_318) SetInitialized(initialized bool) {
 	h.lock.Lock()
 	defer h.lock.Unlock()
 	h.initialized = initialized
 }
-func (h *Handler_316) GetVersion() glsp.LspProtocolVersion {
-	return glsp.Protocol_316
+func (h *Handler_318) GetVersion() glsp.LspProtocolVersion {
+	return glsp.Protocol_318
 }

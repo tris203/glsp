@@ -9,11 +9,11 @@ import (
 	translation "github.com/tliron/glsp/protocol/translation"
 )
 
-func (h *Handler_317) GetMethodMap() map[Method]glsp.HandlerInterface {
+func (h *Handler_317) GetMethodMap() map[LSPMethod]glsp.HandlerInterface {
 	h.lock.Lock()
 	defer h.lock.Unlock()
 	if h.handlerMap == nil {
-		h.handlerMap = map[Method]glsp.HandlerInterface{
+		h.handlerMap = map[LSPMethod]glsp.HandlerInterface{
 			MethodCallHierarchyIncomingCalls:          translation.NewTypedHandler(h.CallHierarchyIncomingCalls),
 			MethodCallHierarchyOutgoingCalls:          translation.NewTypedHandler(h.CallHierarchyOutgoingCalls),
 			MethodCancelRequest:                       translation.NewNotificationHandler(h.CancelRequest),
@@ -24,6 +24,7 @@ func (h *Handler_317) GetMethodMap() map[Method]glsp.HandlerInterface {
 			MethodExit:                                translation.NewContextOnlyHandler(h.Exit),
 			MethodInitialize:                          translation.NewTypedHandler(h.Initialize),
 			MethodInitialized:                         translation.NewNotificationHandler(h.Initialized),
+			MethodInlayHintResolve:                    translation.NewTypedHandler(h.InlayHintResolve),
 			MethodProgress:                            translation.NewNotificationHandler(h.Progress),
 			MethodSetTrace:                            translation.NewNotificationHandler(h.SetTrace),
 			MethodShutdown:                            translation.NewContextOnlyHandler(h.Shutdown),
@@ -46,6 +47,8 @@ func (h *Handler_317) GetMethodMap() map[Method]glsp.HandlerInterface {
 			MethodTextDocumentFormatting:              translation.NewTypedHandler(h.TextDocumentFormatting),
 			MethodTextDocumentHover:                   translation.NewTypedHandler(h.TextDocumentHover),
 			MethodTextDocumentImplementation:          translation.NewTypedHandler(h.TextDocumentImplementation),
+			MethodTextDocumentInlayHint:               translation.NewTypedHandler(h.TextDocumentInlayHint),
+			MethodTextDocumentInlineValue:             translation.NewTypedHandler(h.TextDocumentInlineValue),
 			MethodTextDocumentLinkedEditingRange:      translation.NewTypedHandler(h.TextDocumentLinkedEditingRange),
 			MethodTextDocumentMoniker:                 translation.NewTypedHandler(h.TextDocumentMoniker),
 			MethodTextDocumentOnTypeFormatting:        translation.NewTypedHandler(h.TextDocumentOnTypeFormatting),
@@ -63,6 +66,7 @@ func (h *Handler_317) GetMethodMap() map[Method]glsp.HandlerInterface {
 			MethodTextDocumentWillSave:                translation.NewNotificationHandler(h.TextDocumentWillSave),
 			MethodTextDocumentWillSaveWaitUntil:       translation.NewTypedHandler(h.TextDocumentWillSaveWaitUntil),
 			MethodWindowWorkDoneProgressCancel:        translation.NewNotificationHandler(h.WindowWorkDoneProgressCancel),
+			MethodWorkspaceDiagnostic:                 translation.NewTypedHandler(h.WorkspaceDiagnostic),
 			MethodWorkspaceDidChangeConfiguration:     translation.NewNotificationHandler(h.WorkspaceDidChangeConfiguration),
 			MethodWorkspaceDidChangeWatchedFiles:      translation.NewNotificationHandler(h.WorkspaceDidChangeWatchedFiles),
 			MethodWorkspaceDidChangeWorkspaceFolders:  translation.NewNotificationHandler(h.WorkspaceDidChangeWorkspaceFolders),
@@ -71,6 +75,7 @@ func (h *Handler_317) GetMethodMap() map[Method]glsp.HandlerInterface {
 			MethodWorkspaceDidRenameFiles:             translation.NewNotificationHandler(h.WorkspaceDidRenameFiles),
 			MethodWorkspaceExecuteCommand:             translation.NewTypedHandler(h.WorkspaceExecuteCommand),
 			MethodWorkspaceSymbol:                     translation.NewTypedHandler(h.WorkspaceSymbol),
+			MethodWorkspaceSymbolResolve:              translation.NewTypedHandler(h.WorkspaceSymbolResolve),
 			MethodWorkspaceWillCreateFiles:            translation.NewTypedHandler(h.WorkspaceWillCreateFiles),
 			MethodWorkspaceWillDeleteFiles:            translation.NewTypedHandler(h.WorkspaceWillDeleteFiles),
 			MethodWorkspaceWillRenameFiles:            translation.NewTypedHandler(h.WorkspaceWillRenameFiles),

@@ -4,365 +4,373 @@ package protocol
 
 // LSP method names as Go constants.
 
-type Method = string // LSP method names as Go constants.
+type LSPMethod = string // LSP method names as Go constants.
 const (
 	// A request to resolve the incoming calls for a given `CallHierarchyItem`. @since 3.16.0
 	// @since 3.16.0
-	MethodCallHierarchyIncomingCalls = Method("callHierarchy/incomingCalls")
+	MethodCallHierarchyIncomingCalls = LSPMethod("callHierarchy/incomingCalls")
 
 	// A request to resolve the outgoing calls for a given `CallHierarchyItem`. @since 3.16.0
 	// @since 3.16.0
-	MethodCallHierarchyOutgoingCalls = Method("callHierarchy/outgoingCalls")
+	MethodCallHierarchyOutgoingCalls = LSPMethod("callHierarchy/outgoingCalls")
 
 	// @since <3.16.0
-	MethodCancelRequest = Method("$/cancelRequest")
+	MethodCancelRequest = LSPMethod("$/cancelRequest")
 
 	// Request to resolve additional information for a given code action.The request's parameter is of type {@link CodeAction} the response is of type {@link CodeAction} or a Thenable that resolves to such.
 	// @since <3.16.0
-	MethodCodeActionResolve = Method("codeAction/resolve")
+	MethodCodeActionResolve = LSPMethod("codeAction/resolve")
 
 	// A request to resolve a command for a given code lens.
 	// @since <3.16.0
-	MethodCodeLensResolve = Method("codeLens/resolve")
+	MethodCodeLensResolve = LSPMethod("codeLens/resolve")
 
 	// Request to resolve additional information for a given completion item.The request's parameter is of type {@link CompletionItem} the response is of type {@link CompletionItem} or a Thenable that resolves to such.
 	// @since <3.16.0
-	MethodCompletionItemResolve = Method("completionItem/resolve")
+	MethodCompletionItemResolve = LSPMethod("completionItem/resolve")
 
 	// Request to resolve additional information for a given document link. The request's parameter is of type {@link DocumentLink} the response is of type {@link DocumentLink} or a Thenable that resolves to such.
 	// @since <3.16.0
-	MethodDocumentLinkResolve = Method("documentLink/resolve")
+	MethodDocumentLinkResolve = LSPMethod("documentLink/resolve")
 
 	// The exit event is sent from the client to the server to ask the server to exit its process.
 	// @since <3.16.0
-	MethodExit = Method("exit")
+	MethodExit = LSPMethod("exit")
 
 	// The initialize request is sent from the client to the server. It is sent once as the request after starting up the server. The requests parameter is of type {@link InitializeParams} the response if of type {@link InitializeResult} of a Thenable that resolves to such.
 	// @since <3.16.0
-	MethodInitialize = Method("initialize")
+	MethodInitialize = LSPMethod("initialize")
 
 	// The initialized notification is sent from the client to the server after the client is fully initialized and the server is allowed to send requests from the server to the client.
 	// @since <3.16.0
-	MethodInitialized = Method("initialized")
+	MethodInitialized = LSPMethod("initialized")
 
 	// A request to resolve additional properties for an inlay hint. The request's parameter is of type {@link InlayHint}, the response is of type {@link InlayHint} or a Thenable that resolves to such. @since 3.17.0
 	// @since 3.17.0
-	MethodInlayHintResolve = Method("inlayHint/resolve")
+	MethodInlayHintResolve = LSPMethod("inlayHint/resolve")
 
 	// @since <3.16.0
-	MethodNotebookDocumentDidChange = Method("notebookDocument/didChange")
+	MethodNotebookDocumentDidChange = LSPMethod("notebookDocument/didChange")
 
 	// A notification sent when a notebook closes. @since 3.17.0
 	// @since 3.17.0
-	MethodNotebookDocumentDidClose = Method("notebookDocument/didClose")
+	MethodNotebookDocumentDidClose = LSPMethod("notebookDocument/didClose")
 
 	// A notification sent when a notebook opens. @since 3.17.0
 	// @since 3.17.0
-	MethodNotebookDocumentDidOpen = Method("notebookDocument/didOpen")
+	MethodNotebookDocumentDidOpen = LSPMethod("notebookDocument/didOpen")
 
 	// A notification sent when a notebook document is saved. @since 3.17.0
 	// @since 3.17.0
-	MethodNotebookDocumentDidSave = Method("notebookDocument/didSave")
+	MethodNotebookDocumentDidSave = LSPMethod("notebookDocument/didSave")
 
 	// @since <3.16.0
-	MethodProgress = Method("$/progress")
+	MethodProgress = LSPMethod("$/progress")
 
 	// @since <3.16.0
-	MethodSetTrace = Method("$/setTrace")
+	MethodSetTrace = LSPMethod("$/setTrace")
 
 	// A shutdown request is sent from the client to the server. It is sent once when the client decides to shutdown the server. The only notification that is sent after a shutdown request is the exit event.
 	// @since <3.16.0
-	MethodShutdown = Method("shutdown")
+	MethodShutdown = LSPMethod("shutdown")
 
 	// A request to provide commands for the given text document and range.
 	// @since <3.16.0
-	MethodTextDocumentCodeAction = Method("textDocument/codeAction")
+	MethodTextDocumentCodeAction = LSPMethod("textDocument/codeAction")
 
 	// A request to provide code lens for the given text document.
 	// @since <3.16.0
-	MethodTextDocumentCodeLens = Method("textDocument/codeLens")
+	MethodTextDocumentCodeLens = LSPMethod("textDocument/codeLens")
 
 	// A request to list all presentation for a color. The request's parameter is of type {@link ColorPresentationParams} the response is of type {@link ColorInformation ColorInformation[]} or a Thenable that resolves to such.
 	// @since <3.16.0
-	MethodTextDocumentColorPresentation = Method("textDocument/colorPresentation")
+	MethodTextDocumentColorPresentation = LSPMethod("textDocument/colorPresentation")
 
 	// Request to request completion at a given text document position. The request's parameter is of type {@link TextDocumentPosition} the response is of type {@link CompletionItem CompletionItem[]} or {@link CompletionList} or a Thenable that resolves to such. The request can delay the computation of the {@link CompletionItem.detail `detail`} and {@link CompletionItem.documentation `documentation`} properties to the `completionItem/resolve` request. However, properties that are needed for the initial sorting and filtering, like `sortText`, `filterText`, `insertText`, and `textEdit`, must not be changed during resolve.
 	// @since <3.16.0
-	MethodTextDocumentCompletion = Method("textDocument/completion")
+	MethodTextDocumentCompletion = LSPMethod("textDocument/completion")
 
 	// A request to resolve the type definition locations of a symbol at a given text document position. The request's parameter is of type {@link TextDocumentPositionParams} the response is of type {@link Declaration} or a typed array of {@link DeclarationLink} or a Thenable that resolves to such.
 	// @since <3.16.0
-	MethodTextDocumentDeclaration = Method("textDocument/declaration")
+	MethodTextDocumentDeclaration = LSPMethod("textDocument/declaration")
 
 	// A request to resolve the definition location of a symbol at a given text document position. The request's parameter is of type {@link TextDocumentPosition} the response is of either type {@link Definition} or a typed array of {@link DefinitionLink} or a Thenable that resolves to such.
 	// @since <3.16.0
-	MethodTextDocumentDefinition = Method("textDocument/definition")
+	MethodTextDocumentDefinition = LSPMethod("textDocument/definition")
 
 	// The document diagnostic request definition. @since 3.17.0
 	// @since 3.17.0
-	MethodTextDocumentDiagnostic = Method("textDocument/diagnostic")
+	MethodTextDocumentDiagnostic = LSPMethod("textDocument/diagnostic")
 
 	// The document change notification is sent from the client to the server to signal changes to a text document.
 	// @since <3.16.0
-	MethodTextDocumentDidChange = Method("textDocument/didChange")
+	MethodTextDocumentDidChange = LSPMethod("textDocument/didChange")
 
 	// The document close notification is sent from the client to the server when the document got closed in the client. The document's truth now exists where the document's uri points to (e.g. if the document's uri is a file uri the truth now exists on disk). As with the open notification the close notification is about managing the document's content. Receiving a close notification doesn't mean that the document was open in an editor before. A close notification requires a previous open notification to be sent.
 	// @since <3.16.0
-	MethodTextDocumentDidClose = Method("textDocument/didClose")
+	MethodTextDocumentDidClose = LSPMethod("textDocument/didClose")
 
 	// The document open notification is sent from the client to the server to signal newly opened text documents. The document's truth is now managed by the client and the server must not try to read the document's truth using the document's uri. Open in this sense means it is managed by the client. It doesn't necessarily mean that its content is presented in an editor. An open notification must not be sent more than once without a corresponding close notification send before. This means open and close notification must be balanced and the max open count is one.
 	// @since <3.16.0
-	MethodTextDocumentDidOpen = Method("textDocument/didOpen")
+	MethodTextDocumentDidOpen = LSPMethod("textDocument/didOpen")
 
 	// The document save notification is sent from the client to the server when the document got saved in the client.
 	// @since <3.16.0
-	MethodTextDocumentDidSave = Method("textDocument/didSave")
+	MethodTextDocumentDidSave = LSPMethod("textDocument/didSave")
 
 	// A request to list all color symbols found in a given text document. The request's parameter is of type {@link DocumentColorParams} the response is of type {@link ColorInformation ColorInformation[]} or a Thenable that resolves to such.
 	// @since <3.16.0
-	MethodTextDocumentDocumentColor = Method("textDocument/documentColor")
+	MethodTextDocumentDocumentColor = LSPMethod("textDocument/documentColor")
 
 	// Request to resolve a {@link DocumentHighlight} for a given text document position. The request's parameter is of type {@link TextDocumentPosition} the request response is an array of type {@link DocumentHighlight} or a Thenable that resolves to such.
 	// @since <3.16.0
-	MethodTextDocumentDocumentHighlight = Method("textDocument/documentHighlight")
+	MethodTextDocumentDocumentHighlight = LSPMethod("textDocument/documentHighlight")
 
 	// A request to provide document links
 	// @since <3.16.0
-	MethodTextDocumentDocumentLink = Method("textDocument/documentLink")
+	MethodTextDocumentDocumentLink = LSPMethod("textDocument/documentLink")
 
 	// A request to list all symbols found in a given text document. The request's parameter is of type {@link TextDocumentIdentifier} the response is of type {@link SymbolInformation SymbolInformation[]} or a Thenable that resolves to such.
 	// @since <3.16.0
-	MethodTextDocumentDocumentSymbol = Method("textDocument/documentSymbol")
+	MethodTextDocumentDocumentSymbol = LSPMethod("textDocument/documentSymbol")
 
 	// A request to provide folding ranges in a document. The request's parameter is of type {@link FoldingRangeParams}, the response is of type {@link FoldingRangeList} or a Thenable that resolves to such.
 	// @since <3.16.0
-	MethodTextDocumentFoldingRange = Method("textDocument/foldingRange")
+	MethodTextDocumentFoldingRange = LSPMethod("textDocument/foldingRange")
 
 	// A request to format a whole document.
 	// @since <3.16.0
-	MethodTextDocumentFormatting = Method("textDocument/formatting")
+	MethodTextDocumentFormatting = LSPMethod("textDocument/formatting")
 
 	// Request to request hover information at a given text document position. The request's parameter is of type {@link TextDocumentPosition} the response is of type {@link Hover} or a Thenable that resolves to such.
 	// @since <3.16.0
-	MethodTextDocumentHover = Method("textDocument/hover")
+	MethodTextDocumentHover = LSPMethod("textDocument/hover")
 
 	// A request to resolve the implementation locations of a symbol at a given text document position. The request's parameter is of type {@link TextDocumentPositionParams} the response is of type {@link Definition} or a Thenable that resolves to such.
 	// @since <3.16.0
-	MethodTextDocumentImplementation = Method("textDocument/implementation")
+	MethodTextDocumentImplementation = LSPMethod("textDocument/implementation")
 
 	// A request to provide inlay hints in a document. The request's parameter is of type {@link InlayHintsParams}, the response is of type {@link InlayHint InlayHint[]} or a Thenable that resolves to such. @since 3.17.0
 	// @since 3.17.0
-	MethodTextDocumentInlayHint = Method("textDocument/inlayHint")
+	MethodTextDocumentInlayHint = LSPMethod("textDocument/inlayHint")
 
 	// A request to provide inline completions in a document. The request's parameter is of type {@link InlineCompletionParams}, the response is of type {@link InlineCompletion InlineCompletion[]} or a Thenable that resolves to such. @since 3.18.0 @proposed
 	// @since 3.18.0
-	MethodTextDocumentInlineCompletion = Method("textDocument/inlineCompletion")
+	MethodTextDocumentInlineCompletion = LSPMethod("textDocument/inlineCompletion")
 
 	// A request to provide inline values in a document. The request's parameter is of type {@link InlineValueParams}, the response is of type {@link InlineValue InlineValue[]} or a Thenable that resolves to such. @since 3.17.0
 	// @since 3.17.0
-	MethodTextDocumentInlineValue = Method("textDocument/inlineValue")
+	MethodTextDocumentInlineValue = LSPMethod("textDocument/inlineValue")
 
 	// A request to provide ranges that can be edited together. @since 3.16.0
 	// @since 3.16.0
-	MethodTextDocumentLinkedEditingRange = Method("textDocument/linkedEditingRange")
+	MethodTextDocumentLinkedEditingRange = LSPMethod("textDocument/linkedEditingRange")
 
 	// A request to get the moniker of a symbol at a given text document position. The request parameter is of type {@link TextDocumentPositionParams}. The response is of type {@link Moniker Moniker[]} or `null`.
 	// @since <3.16.0
-	MethodTextDocumentMoniker = Method("textDocument/moniker")
+	MethodTextDocumentMoniker = LSPMethod("textDocument/moniker")
 
 	// A request to format a document on type.
 	// @since <3.16.0
-	MethodTextDocumentOnTypeFormatting = Method("textDocument/onTypeFormatting")
+	MethodTextDocumentOnTypeFormatting = LSPMethod("textDocument/onTypeFormatting")
 
 	// A request to result a `CallHierarchyItem` in a document at a given position. Can be used as an input to an incoming or outgoing call hierarchy. @since 3.16.0
 	// @since 3.16.0
-	MethodTextDocumentPrepareCallHierarchy = Method("textDocument/prepareCallHierarchy")
+	MethodTextDocumentPrepareCallHierarchy = LSPMethod("textDocument/prepareCallHierarchy")
 
 	// A request to test and perform the setup necessary for a rename. @since 3.16 - support for default behavior
 	// @since 3.16.0
-	MethodTextDocumentPrepareRename = Method("textDocument/prepareRename")
+	MethodTextDocumentPrepareRename = LSPMethod("textDocument/prepareRename")
 
 	// A request to result a `TypeHierarchyItem` in a document at a given position. Can be used as an input to a subtypes or supertypes type hierarchy. @since 3.17.0
 	// @since 3.17.0
-	MethodTextDocumentPrepareTypeHierarchy = Method("textDocument/prepareTypeHierarchy")
+	MethodTextDocumentPrepareTypeHierarchy = LSPMethod("textDocument/prepareTypeHierarchy")
 
 	// A request to format a range in a document.
 	// @since <3.16.0
-	MethodTextDocumentRangeFormatting = Method("textDocument/rangeFormatting")
+	MethodTextDocumentRangeFormatting = LSPMethod("textDocument/rangeFormatting")
 
 	// A request to format ranges in a document. @since 3.18.0 @proposed
 	// @since 3.18.0
-	MethodTextDocumentRangesFormatting = Method("textDocument/rangesFormatting")
+	MethodTextDocumentRangesFormatting = LSPMethod("textDocument/rangesFormatting")
 
 	// A request to resolve project-wide references for the symbol denoted by the given text document position. The request's parameter is of type {@link ReferenceParams} the response is of type {@link Location Location[]} or a Thenable that resolves to such.
 	// @since <3.16.0
-	MethodTextDocumentReferences = Method("textDocument/references")
+	MethodTextDocumentReferences = LSPMethod("textDocument/references")
 
 	// A request to rename a symbol.
 	// @since <3.16.0
-	MethodTextDocumentRename = Method("textDocument/rename")
+	MethodTextDocumentRename = LSPMethod("textDocument/rename")
 
 	// A request to provide selection ranges in a document. The request's parameter is of type {@link SelectionRangeParams}, the response is of type {@link SelectionRange SelectionRange[]} or a Thenable that resolves to such.
 	// @since <3.16.0
-	MethodTextDocumentSelectionRange = Method("textDocument/selectionRange")
+	MethodTextDocumentSelectionRange = LSPMethod("textDocument/selectionRange")
 
 	// @since 3.16.0
-	MethodTextDocumentSemanticTokensFull = Method("textDocument/semanticTokens/full")
+	MethodTextDocumentSemanticTokensFull = LSPMethod("textDocument/semanticTokens/full")
 
 	// @since 3.16.0
-	MethodTextDocumentSemanticTokensFullDelta = Method("textDocument/semanticTokens/full/delta")
+	MethodTextDocumentSemanticTokensFullDelta = LSPMethod("textDocument/semanticTokens/full/delta")
 
 	// @since 3.16.0
-	MethodTextDocumentSemanticTokensRange = Method("textDocument/semanticTokens/range")
+	MethodTextDocumentSemanticTokensRange = LSPMethod("textDocument/semanticTokens/range")
 
 	// @since <3.16.0
-	MethodTextDocumentSignatureHelp = Method("textDocument/signatureHelp")
+	MethodTextDocumentSignatureHelp = LSPMethod("textDocument/signatureHelp")
 
 	// A request to resolve the type definition locations of a symbol at a given text document position. The request's parameter is of type {@link TextDocumentPositionParams} the response is of type {@link Definition} or a Thenable that resolves to such.
 	// @since <3.16.0
-	MethodTextDocumentTypeDefinition = Method("textDocument/typeDefinition")
+	MethodTextDocumentTypeDefinition = LSPMethod("textDocument/typeDefinition")
 
 	// A document will save notification is sent from the client to the server before the document is actually saved.
 	// @since <3.16.0
-	MethodTextDocumentWillSave = Method("textDocument/willSave")
+	MethodTextDocumentWillSave = LSPMethod("textDocument/willSave")
 
 	// A document will save request is sent from the client to the server before the document is actually saved. The request can return an array of TextEdits which will be applied to the text document before it is saved. Please note that clients might drop results if computing the text edits took too long or if a server constantly fails on this request. This is done to keep the save fast and reliable.
 	// @since <3.16.0
-	MethodTextDocumentWillSaveWaitUntil = Method("textDocument/willSaveWaitUntil")
+	MethodTextDocumentWillSaveWaitUntil = LSPMethod("textDocument/willSaveWaitUntil")
 
 	// A request to resolve the subtypes for a given `TypeHierarchyItem`. @since 3.17.0
 	// @since 3.17.0
-	MethodTypeHierarchySubtypes = Method("typeHierarchy/subtypes")
+	MethodTypeHierarchySubtypes = LSPMethod("typeHierarchy/subtypes")
 
 	// A request to resolve the supertypes for a given `TypeHierarchyItem`. @since 3.17.0
 	// @since 3.17.0
-	MethodTypeHierarchySupertypes = Method("typeHierarchy/supertypes")
+	MethodTypeHierarchySupertypes = LSPMethod("typeHierarchy/supertypes")
 
 	// The `window/workDoneProgress/cancel` notification is sent from the client to the server to cancel a progress initiated on the server side.
 	// @since <3.16.0
-	MethodWindowWorkDoneProgressCancel = Method("window/workDoneProgress/cancel")
+	MethodWindowWorkDoneProgressCancel = LSPMethod("window/workDoneProgress/cancel")
 
 	// The workspace diagnostic request definition. @since 3.17.0
 	// @since 3.17.0
-	MethodWorkspaceDiagnostic = Method("workspace/diagnostic")
+	MethodWorkspaceDiagnostic = LSPMethod("workspace/diagnostic")
 
 	// The configuration change notification is sent from the client to the server when the client's configuration has changed. The notification contains the changed configuration as defined by the language client.
 	// @since <3.16.0
-	MethodWorkspaceDidChangeConfiguration = Method("workspace/didChangeConfiguration")
+	MethodWorkspaceDidChangeConfiguration = LSPMethod("workspace/didChangeConfiguration")
 
 	// The watched files notification is sent from the client to the server when the client detects changes to file watched by the language client.
 	// @since <3.16.0
-	MethodWorkspaceDidChangeWatchedFiles = Method("workspace/didChangeWatchedFiles")
+	MethodWorkspaceDidChangeWatchedFiles = LSPMethod("workspace/didChangeWatchedFiles")
 
 	// The `workspace/didChangeWorkspaceFolders` notification is sent from the client to the server when the workspace folder configuration changes.
 	// @since <3.16.0
-	MethodWorkspaceDidChangeWorkspaceFolders = Method("workspace/didChangeWorkspaceFolders")
+	MethodWorkspaceDidChangeWorkspaceFolders = LSPMethod("workspace/didChangeWorkspaceFolders")
 
 	// The did create files notification is sent from the client to the server when files were created from within the client. @since 3.16.0
 	// @since 3.16.0
-	MethodWorkspaceDidCreateFiles = Method("workspace/didCreateFiles")
+	MethodWorkspaceDidCreateFiles = LSPMethod("workspace/didCreateFiles")
 
 	// The will delete files request is sent from the client to the server before files are actually deleted as long as the deletion is triggered from within the client. @since 3.16.0
 	// @since 3.16.0
-	MethodWorkspaceDidDeleteFiles = Method("workspace/didDeleteFiles")
+	MethodWorkspaceDidDeleteFiles = LSPMethod("workspace/didDeleteFiles")
 
 	// The did rename files notification is sent from the client to the server when files were renamed from within the client. @since 3.16.0
 	// @since 3.16.0
-	MethodWorkspaceDidRenameFiles = Method("workspace/didRenameFiles")
+	MethodWorkspaceDidRenameFiles = LSPMethod("workspace/didRenameFiles")
 
 	// A request send from the client to the server to execute a command. The request might return a workspace edit which the client will apply to the workspace.
 	// @since <3.16.0
-	MethodWorkspaceExecuteCommand = Method("workspace/executeCommand")
+	MethodWorkspaceExecuteCommand = LSPMethod("workspace/executeCommand")
 
 	// A request to list project-wide symbols matching the query string given by the {@link WorkspaceSymbolParams}. The response is of type {@link SymbolInformation SymbolInformation[]} or a Thenable that resolves to such. @since 3.17.0 - support for WorkspaceSymbol in the returned data. Clients need to advertise support for WorkspaceSymbols via the client capability `workspace.symbol.resolveSupport`.
 	// @since 3.17.0
-	MethodWorkspaceSymbol = Method("workspace/symbol")
+	MethodWorkspaceSymbol = LSPMethod("workspace/symbol")
 
 	// A request to resolve the range inside the workspace symbol's location. @since 3.17.0
 	// @since 3.17.0
-	MethodWorkspaceSymbolResolve = Method("workspaceSymbol/resolve")
+	MethodWorkspaceSymbolResolve = LSPMethod("workspaceSymbol/resolve")
+
+	// The `workspace/textDocumentContent` request is sent from the client to the server to request the content of a text document. @since 3.18.0 @proposed
+	// @since 3.18.0
+	MethodWorkspaceTextDocumentContent = LSPMethod("workspace/textDocumentContent")
 
 	// The will create files request is sent from the client to the server before files are actually created as long as the creation is triggered from within the client. The request can return a `WorkspaceEdit` which will be applied to workspace before the files are created. Hence the `WorkspaceEdit` can not manipulate the content of the file to be created. @since 3.16.0
 	// @since 3.16.0
-	MethodWorkspaceWillCreateFiles = Method("workspace/willCreateFiles")
+	MethodWorkspaceWillCreateFiles = LSPMethod("workspace/willCreateFiles")
 
 	// The did delete files notification is sent from the client to the server when files were deleted from within the client. @since 3.16.0
 	// @since 3.16.0
-	MethodWorkspaceWillDeleteFiles = Method("workspace/willDeleteFiles")
+	MethodWorkspaceWillDeleteFiles = LSPMethod("workspace/willDeleteFiles")
 
 	// The will rename files request is sent from the client to the server before files are actually renamed as long as the rename is triggered from within the client. @since 3.16.0
 	// @since 3.16.0
-	MethodWorkspaceWillRenameFiles = Method("workspace/willRenameFiles")
+	MethodWorkspaceWillRenameFiles = LSPMethod("workspace/willRenameFiles")
 
 	// The `client/registerCapability` request is sent from the server to the client to register a new capability handler on the client side.
 	// @since <3.16.0
-	ServerClientRegisterCapability = Method("client/registerCapability")
+	ServerClientRegisterCapability = LSPMethod("client/registerCapability")
 
 	// The `client/unregisterCapability` request is sent from the server to the client to unregister a previously registered capability handler on the client side.
 	// @since <3.16.0
-	ServerClientUnregisterCapability = Method("client/unregisterCapability")
+	ServerClientUnregisterCapability = LSPMethod("client/unregisterCapability")
 
 	// @since <3.16.0
-	ServerLogTrace = Method("$/logTrace")
+	ServerLogTrace = LSPMethod("$/logTrace")
 
 	// The telemetry event notification is sent from the server to the client to ask the client to log telemetry data.
 	// @since <3.16.0
-	ServerTelemetryEvent = Method("telemetry/event")
+	ServerTelemetryEvent = LSPMethod("telemetry/event")
 
 	// Diagnostics notification are sent from the server to the client to signal results of validation runs.
 	// @since <3.16.0
-	ServerTextDocumentPublishDiagnostics = Method("textDocument/publishDiagnostics")
+	ServerTextDocumentPublishDiagnostics = LSPMethod("textDocument/publishDiagnostics")
 
 	// The log message notification is sent from the server to the client to ask the client to log a particular message.
 	// @since <3.16.0
-	ServerWindowLogMessage = Method("window/logMessage")
+	ServerWindowLogMessage = LSPMethod("window/logMessage")
 
 	// A request to show a document. This request might open an external program depending on the value of the URI to open. For example a request to open `https://code.visualstudio.com/` will very likely open the URI in a WEB browser. @since 3.16.0
 	// @since 3.16.0
-	ServerWindowShowDocument = Method("window/showDocument")
+	ServerWindowShowDocument = LSPMethod("window/showDocument")
 
 	// The show message notification is sent from a server to a client to ask the client to display a particular message in the user interface.
 	// @since <3.16.0
-	ServerWindowShowMessage = Method("window/showMessage")
+	ServerWindowShowMessage = LSPMethod("window/showMessage")
 
 	// The show message request is sent from the server to the client to show a message and a set of options actions to the user.
 	// @since <3.16.0
-	ServerWindowShowMessageRequest = Method("window/showMessageRequest")
+	ServerWindowShowMessageRequest = LSPMethod("window/showMessageRequest")
 
 	// The `window/workDoneProgress/create` request is sent from the server to the client to initiate progress reporting from the server.
 	// @since <3.16.0
-	ServerWindowWorkDoneProgressCreate = Method("window/workDoneProgress/create")
+	ServerWindowWorkDoneProgressCreate = LSPMethod("window/workDoneProgress/create")
 
 	// A request sent from the server to the client to modified certain resources.
 	// @since <3.16.0
-	ServerWorkspaceApplyEdit = Method("workspace/applyEdit")
+	ServerWorkspaceApplyEdit = LSPMethod("workspace/applyEdit")
 
 	// A request to refresh all code actions @since 3.16.0
 	// @since 3.16.0
-	ServerWorkspaceCodeLensRefresh = Method("workspace/codeLens/refresh")
+	ServerWorkspaceCodeLensRefresh = LSPMethod("workspace/codeLens/refresh")
 
-	// The 'workspace/configuration' request is sent from the server to the client to fetch a certain configuration setting. This pull model replaces the old push model where the client signaled configuration change via an event. If the server still needs to react to configuration changes (since the server caches the result of `workspace/configuration` requests) the server should register for an empty configuration change event and empty the cache if such an event is received.
+	// The 'workspace/configuration' request is sent from the server to the client to fetch a certain configuration setting. This pull model replaces the old push model were the client signaled configuration change via an event. If the server still needs to react to configuration changes (since the server caches the result of `workspace/configuration` requests) the server should register for an empty configuration change event and empty the cache if such an event is received.
 	// @since <3.16.0
-	ServerWorkspaceConfiguration = Method("workspace/configuration")
+	ServerWorkspaceConfiguration = LSPMethod("workspace/configuration")
 
 	// The diagnostic refresh request definition. @since 3.17.0
 	// @since 3.17.0
-	ServerWorkspaceDiagnosticRefresh = Method("workspace/diagnostic/refresh")
+	ServerWorkspaceDiagnosticRefresh = LSPMethod("workspace/diagnostic/refresh")
 
 	// @since 3.18.0 @proposed
 	// @since 3.18.0
-	ServerWorkspaceFoldingRangeRefresh = Method("workspace/foldingRange/refresh")
+	ServerWorkspaceFoldingRangeRefresh = LSPMethod("workspace/foldingRange/refresh")
 
 	// @since 3.17.0
-	ServerWorkspaceInlayHintRefresh = Method("workspace/inlayHint/refresh")
+	ServerWorkspaceInlayHintRefresh = LSPMethod("workspace/inlayHint/refresh")
 
 	// @since 3.17.0
-	ServerWorkspaceInlineValueRefresh = Method("workspace/inlineValue/refresh")
+	ServerWorkspaceInlineValueRefresh = LSPMethod("workspace/inlineValue/refresh")
 
 	// @since 3.16.0
-	ServerWorkspaceSemanticTokensRefresh = Method("workspace/semanticTokens/refresh")
+	ServerWorkspaceSemanticTokensRefresh = LSPMethod("workspace/semanticTokens/refresh")
+
+	// The `workspace/textDocumentContent` request is sent from the server to the client to refresh the content of a specific text document. @since 3.18.0 @proposed
+	// @since 3.18.0
+	ServerWorkspaceTextDocumentContentRefresh = LSPMethod("workspace/textDocumentContent/refresh")
 
 	// The `workspace/workspaceFolders` is sent from the server to the client to fetch the open workspace folders.
 	// @since <3.16.0
-	ServerWorkspaceWorkspaceFolders = Method("workspace/workspaceFolders")
+	ServerWorkspaceWorkspaceFolders = LSPMethod("workspace/workspaceFolders")
 )

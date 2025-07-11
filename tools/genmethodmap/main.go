@@ -138,13 +138,13 @@ func generateGetMethodMap(handlerName string, fields []FieldInfo) {
 		Params(jen.Id("h").Op("*").Id(handlerName)).
 		Id("GetMethodMap").
 		Params().
-		Params(jen.Map(jen.Id("Method")).Qual("github.com/tliron/glsp", "HandlerInterface")).
+		Params(jen.Map(jen.Id("LSPMethod")).Qual("github.com/tliron/glsp", "HandlerInterface")).
 		Block(
 			jen.Id("h").Dot("lock").Dot("Lock").Call(),
 			jen.Defer().Id("h").Dot("lock").Dot("Unlock").Call(),
 			jen.If(jen.Id("h").Dot("handlerMap").Op("==").Nil()).Block(
 				jen.Id("h").Dot("handlerMap").Op("=").Map(
-					jen.Id("Method"),
+					jen.Id("LSPMethod"),
 				).Qual(
 					"github.com/tliron/glsp", "HandlerInterface",
 				).Values(

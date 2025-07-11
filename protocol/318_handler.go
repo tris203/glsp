@@ -1,8 +1,8 @@
-//go:generate go run ../tools/genmethodmap/main.go 316_handler
+//go:generate go run ../tools/genmethodmap/main.go 318_handler
 
 package protocol
 
-type Handler_316 struct {
+type Handler_318 struct {
 	// Base Protocol
 	CancelRequest NotificationFunc[CancelParams]
 	Progress      NotificationFunc[ProgressParams]
@@ -52,6 +52,7 @@ type Handler_316 struct {
 	TextDocumentCompletion              RequestFunc[CompletionParams, CompletionList]
 	TextDocumentDeclaration             RequestFunc[DeclarationParams, Or_textDocument_declaration]
 	TextDocumentDefinition              RequestFunc[DefinitionParams, []Location]
+	TextDocumentDiagnostic              RequestFunc[DocumentDiagnosticParams, DocumentDiagnosticReport]
 	TextDocumentDocumentHighlight       RequestFunc[DocumentHighlightParams, []DocumentHighlight]
 	TextDocumentDocumentLink            RequestFunc[DocumentLinkParams, []DocumentLink]
 	TextDocumentDocumentSymbol          RequestFunc[DocumentSymbolParams, []any]
@@ -63,7 +64,7 @@ type Handler_316 struct {
 	TextDocumentMoniker                 RequestFunc[MonikerParams, []Moniker]
 	TextDocumentOnTypeFormatting        RequestFunc[DocumentOnTypeFormattingParams, []TextEdit]
 	TextDocumentPrepareCallHierarchy    RequestFunc[CallHierarchyPrepareParams, []CallHierarchyItem]
-	TextDocumentPrepareRename           RequestFunc[PrepareRenameParams, any]
+	TextDocumentPrepareRename           RequestFunc[PrepareRenameParams, PrepareRenameResult]
 	TextDocumentRangeFormatting         RequestFunc[DocumentRangeFormattingParams, []TextEdit]
 	TextDocumentReferences              RequestFunc[ReferenceParams, []Location]
 	TextDocumentRename                  RequestFunc[RenameParams, WorkspaceEdit]
@@ -73,6 +74,20 @@ type Handler_316 struct {
 	TextDocumentSemanticTokensRange     RequestFunc[SemanticTokensRangeParams, SemanticTokens]
 	TextDocumentSignatureHelp           RequestFunc[SignatureHelpParams, SignatureHelp]
 	TextDocumentTypeDefinition          RequestFunc[TypeDefinitionParams, []Location]
+
+	WorkspaceDiagnostic RequestFunc[WorkspaceDiagnosticParams, WorkspaceDiagnosticReport]
+
+	TextDocumentInlineValue RequestFunc[InlineValueParams, []InlineValue]
+	TextDocumentInlayHint   RequestFunc[InlayHintParams, []InlayHint]
+	InlayHintResolve        RequestFunc[InlayHint, InlayHint]
+	WorkspaceSymbolResolve  RequestFunc[SymbolInformation, SymbolInformation]
+
+	// LSP 3.18 additions
+	TextDocumentInlineCompletion RequestFunc[InlineCompletionParams, Or_Result_textDocument_inlineCompletion]
+	NotebookDocumentDidChange    NotificationFunc[DidChangeNotebookDocumentParams]
+	NotebookDocumentDidClose     NotificationFunc[DidCloseNotebookDocumentParams]
+	NotebookDocumentDidOpen      NotificationFunc[DidOpenNotebookDocumentParams]
+	NotebookDocumentDidSave      NotificationFunc[DidSaveNotebookDocumentParams]
 
 	common_handler
 }

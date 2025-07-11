@@ -28,6 +28,12 @@ func (h *Handler_317) GetCustomMethods() map[string]glsp.HandlerInterface {
 	return customMethods
 }
 
+func (h *Handler_318) GetCustomMethods() map[string]glsp.HandlerInterface {
+	mu.RLock()
+	defer mu.RUnlock()
+	return customMethods
+}
+
 func AddCustomRequest[P any, R any](method string, handler RequestFunc[P, R]) error {
 	mu.Lock()
 	defer mu.Unlock()

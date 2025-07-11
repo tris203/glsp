@@ -36,10 +36,11 @@ Minimal Example
 package main
 
 import (
+	"fmt"
 	"log/slog"
 
 	"github.com/tliron/glsp"
-	protocol "github.com/tliron/glsp/protocol_3_16"
+	"github.com/tliron/glsp/protocol"
 	"github.com/tliron/glsp/server"
 )
 
@@ -47,27 +48,30 @@ const lsName = "my language"
 
 var (
 	version string = "0.0.1"
-	handler protocol.Handler
+	handler protocol.Handler_316
 )
 
 func main() {
-	handler = protocol.Handler{
+	handler = protocol.Handler_316{
 		Initialize:  initialize,
 		Initialized: initialized,
 		Shutdown:    shutdown,
 		SetTrace:    setTrace,
 	}
 
-	logger := slog.Default().With("language-server", lsName)
+	protocol.AddCustomRequest("test/test", TestHandler)
+	protocol.AddCustomNotification("test/noti", TestNotificationHandler)
+
+	logger := slog.Default()
 	server := server.NewServer(&handler, logger, false)
 
 	server.RunStdio()
 }
 
-func initialize(context *glsp.Context, params *protocol.InitializeParams) (any, error) {
-	capabilities := handler.CreateServerCapabilities()
+func initialize(context *glsp.Context, params *protocol.InitializeParams_316) (protocol.InitializeResult_316, error) {
+	capabilities := protocol.CreateServerCapabilities(&handler)
 
-	return protocol.InitializeResult{
+	return protocol.InitializeResult_316{
 		Capabilities: capabilities,
 		ServerInfo: &protocol.InitializeResultServerInfo{
 			Name:    lsName,
@@ -82,6 +86,25 @@ func initialized(context *glsp.Context, params *protocol.InitializedParams) erro
 
 func shutdown(context *glsp.Context) error {
 	protocol.SetTraceValue(protocol.TraceValueOff)
+	return nil
+}
+
+type TestParams struct {
+	From_Client string `json:"from_client"`
+}
+
+type TestResult struct {
+	From_Server string `json:"out"`
+}
+
+func TestHandler(context *glsp.Context, params *TestParams) (TestResult, error) {
+	fmt.Printf("Parameters: %v\n", params.From_Client)
+	return TestResult{From_Server: "Hello From Server"}, nil
+}
+
+func TestNotificationHandler(context *glsp.Context, params *TestParams) error {
+	fmt.Println("Test Notification Handler")
+	fmt.Printf("Parameters: %v\n", params.From_Client)
 	return nil
 }
 
