@@ -98,6 +98,10 @@ func (s *Server) HandlerHandle(context *glsp.Context) (r any, validMethod bool, 
 		return nil, false, false, fmt.Errorf("method not supported: %s", context.Method)
 	}
 
+	if handler == nil {
+		return nil, false, false, fmt.Errorf("handler not found for method: %s", context.Method)
+	}
+
 	validMethod = true
 	r, err = handler.Handle(context, context.Params)
 	if err != nil {

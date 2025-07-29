@@ -2,6 +2,7 @@ package translation
 
 import (
 	"encoding/json"
+
 	"github.com/tliron/glsp"
 )
 
@@ -29,6 +30,9 @@ func (h TranslationFunc[P, R]) Handle(ctx *glsp.Context, params []byte) (any, er
 
 // Factory function for notification handlers (return only error)
 func NewNotificationHandler[P any](fn func(*glsp.Context, *P) error) glsp.HandlerInterface {
+	if fn == nil {
+		return nil
+	}
 	return TranslationFunc[P, struct{}](func(ctx *glsp.Context, p *P) (struct{}, error) {
 		return struct{}{}, fn(ctx, p)
 	})
@@ -36,6 +40,9 @@ func NewNotificationHandler[P any](fn func(*glsp.Context, *P) error) glsp.Handle
 
 // Factory function for context-only handlers (no parameters)
 func NewContextOnlyHandler(fn func(*glsp.Context) error) glsp.HandlerInterface {
+	if fn == nil {
+		return nil
+	}
 	return TranslationFunc[struct{}, struct{}](func(ctx *glsp.Context, _ *struct{}) (struct{}, error) {
 		return struct{}{}, fn(ctx)
 	})
@@ -43,18 +50,10 @@ func NewContextOnlyHandler(fn func(*glsp.Context) error) glsp.HandlerInterface {
 
 // Factory function for handlers with specific return types - converts to any
 func NewTypedHandler[P, R any](fn func(*glsp.Context, *P) (R, error)) glsp.HandlerInterface {
+	if fn == nil {
+		return nil
+	}
 	return TranslationFunc[P, any](func(ctx *glsp.Context, p *P) (any, error) {
-		result, err := fn(ctx, p)
-		if err != nil {
-			return nil, err
-		}
-		return result, nil
-	})
-}
-
-// Factory function for handlers with non-specific return types - converts to any
-func NewCustomHandler(fn func(ctx *glsp.Context, p any) (any, error)) glsp.HandlerInterface {
-	return TranslationFunc[any, any](func(ctx *glsp.Context, p *any) (any, error) {
 		result, err := fn(ctx, p)
 		if err != nil {
 			return nil, err
