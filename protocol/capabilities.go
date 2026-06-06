@@ -437,13 +437,11 @@ func CreateServerCapabilities[H Handlers](handler *H) ServerCapabilities {
 
 	// LSP 3.17 specific
 	if hasHandler(handlerValue, HandlerTextDocumentDiagnostic) {
-		if field := capValue.FieldByName(CapabilityDiagnosticProvider); field.IsValid() && field.CanSet() {
-			diagnosticOptions := DiagnosticOptions{
-				InterFileDependencies: true,
-				WorkspaceDiagnostics:  false,
-			}
-			field.Set(reflect.ValueOf(diagnosticOptions))
+		diagnosticOptions := DiagnosticOptions{
+			InterFileDependencies: true,
+			WorkspaceDiagnostics:  false,
 		}
+		setCapabilityField(capValue, CapabilityDiagnosticProvider, diagnosticOptions)
 	}
 
 	// LSP 3.18 specific
@@ -493,17 +491,24 @@ func setCapabilityField(capValue reflect.Value, fieldName string, value any) { /
 		len(fieldType.Elem().Name()) > len("Or_ServerCapabilities_") &&
 		fieldType.Elem().Name()[:len("Or_ServerCapabilities_")] == "Or_ServerCapabilities_" {
 
-		// If the value is a bool, wrap it in the struct
-		if b, ok := value.(bool); ok {
-			wrapper := reflect.New(fieldType.Elem())
-			wrapper.Elem().FieldByName("Value").Set(reflect.ValueOf(b))
-			field.Set(wrapper)
-			return
-		}
+		wrapper := reflect.New(fieldType.Elem())
+		wrapper.Elem().FieldByName("Value").Set(reflect.ValueOf(value))
+		field.Set(wrapper)
+		return
 	}
 
-	// Default: set the value as is
-	field.Set(reflect.ValueOf(value))
+	valueOf := reflect.ValueOf(value)
+	if valueOf.Type().AssignableTo(fieldType) {
+		field.Set(valueOf)
+		return
+	}
+
+	if fieldType.Kind() == reflect.Ptr && valueOf.Type().AssignableTo(fieldType.Elem()) {
+		ptr := reflect.New(fieldType.Elem())
+		ptr.Elem().Set(valueOf)
+		field.Set(ptr)
+		return
+	}
 }
 
 func setTextDocumentSyncOption(capValue reflect.Value, optionName string, value any) { // optionName should be a Capability* const
@@ -523,7 +528,7 @@ func setTextDocumentSyncOption(capValue reflect.Value, optionName string, value 
 		syncStruct := syncField.Elem().Elem()
 		optionField := syncStruct.FieldByName(optionName)
 		if optionField.IsValid() && optionField.CanSet() {
-			optionField.Set(reflect.ValueOf(value))
+			setFieldValue(optionField, value)
 		}
 	}
 }
@@ -535,7 +540,7 @@ func setSemanticTokensOption(capValue reflect.Value, handlerValue reflect.Value)
 	}
 
 	if providerField.Kind() == reflect.Interface {
-		if providerField.IsNil() || providerField.Elem().Type().Name() != "SemanticTokensOptions" {
+		if providerField.IsNil() || providerField.Elem().Type() != reflect.TypeOf(&SemanticTokensOptions{}) {
 			semanticOptions := &SemanticTokensOptions{}
 			providerField.Set(reflect.ValueOf(semanticOptions))
 		}
@@ -544,10 +549,9 @@ func setSemanticTokensOption(capValue reflect.Value, handlerValue reflect.Value)
 		fullField := semanticStruct.FieldByName(CapabilityFull)
 
 		if hasHandler(handlerValue, HandlerTextDocumentSemanticTokensFullDelta) {
-			// delta := &SemanticDelta{Delta: true}
-			fullField.Set(reflect.ValueOf(true))
+			fullField.Set(reflect.ValueOf(&Or_SemanticTokensOptions_full{Value: SemanticTokensFullDelta{Delta: true}}))
 		} else {
-			fullField.Set(reflect.ValueOf(true))
+			fullField.Set(reflect.ValueOf(&Or_SemanticTokensOptions_full{Value: true}))
 		}
 	}
 }
@@ -559,7 +563,7 @@ func setSemanticTokensRangeOption(capValue reflect.Value) {
 	}
 
 	if providerField.Kind() == reflect.Interface {
-		if providerField.IsNil() || providerField.Elem().Type().Name() != "SemanticTokensOptions" {
+		if providerField.IsNil() || providerField.Elem().Type() != reflect.TypeOf(&SemanticTokensOptions{}) {
 			semanticOptions := &SemanticTokensOptions{}
 			providerField.Set(reflect.ValueOf(semanticOptions))
 		}
@@ -567,8 +571,29 @@ func setSemanticTokensRangeOption(capValue reflect.Value) {
 		semanticStruct := providerField.Elem().Elem()
 		rangeField := semanticStruct.FieldByName(CapabilityRange)
 		if rangeField.IsValid() && rangeField.CanSet() {
-			rangeField.Set(reflect.ValueOf(true))
+			rangeField.Set(reflect.ValueOf(&Or_SemanticTokensOptions_range{Value: true}))
 		}
+	}
+}
+
+func setFieldValue(field reflect.Value, value any) {
+	valueOf := reflect.ValueOf(value)
+	fieldType := field.Type()
+
+	if valueOf.Type().AssignableTo(fieldType) {
+		field.Set(valueOf)
+		return
+	}
+
+	if fieldType.Kind() == reflect.Ptr && valueOf.Type().AssignableTo(fieldType.Elem()) {
+		ptr := reflect.New(fieldType.Elem())
+		ptr.Elem().Set(valueOf)
+		field.Set(ptr)
+		return
+	}
+
+	if fieldType.Kind() == reflect.Ptr && fieldType.Elem().Kind() == reflect.Struct {
+		field.Set(reflect.New(fieldType.Elem()))
 	}
 }
 

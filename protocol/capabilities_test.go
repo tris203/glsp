@@ -83,3 +83,79 @@ func TestCreateServerCapabilities_PointerVsValue(t *testing.T) {
 		t.Errorf("OpenClose (pointer) should be true when TextDocumentDidOpen is set")
 	}
 }
+
+func TestCreateServerCapabilities_PointerBackedProviders(t *testing.T) {
+	handler := &Handler_316{
+		TextDocumentCompletion:   RequestFunc[CompletionParams, CompletionList](func(_ *glsp.Context, _ *CompletionParams) (CompletionList, error) { return CompletionList{}, nil }),
+		TextDocumentCodeLens:     RequestFunc[CodeLensParams, []CodeLens](func(_ *glsp.Context, _ *CodeLensParams) ([]CodeLens, error) { return nil, nil }),
+		TextDocumentDocumentLink: RequestFunc[DocumentLinkParams, []DocumentLink](func(_ *glsp.Context, _ *DocumentLinkParams) ([]DocumentLink, error) { return nil, nil }),
+		TextDocumentDidSave:      NotificationFunc[DidSaveTextDocumentParams](func(_ *glsp.Context, _ *DidSaveTextDocumentParams) error { return nil }),
+	}
+
+	caps := CreateServerCapabilities(handler)
+	if caps.CompletionProvider == nil {
+		t.Error("CompletionProvider should be set")
+	}
+	if caps.CodeLensProvider == nil {
+		t.Error("CodeLensProvider should be set")
+	}
+	if caps.DocumentLinkProvider == nil {
+		t.Error("DocumentLinkProvider should be set")
+	}
+	sync, ok := caps.TextDocumentSync.(*TextDocumentSyncOptions)
+	if !ok {
+		t.Fatalf("TextDocumentSync should be *TextDocumentSyncOptions, got %T", caps.TextDocumentSync)
+	}
+	if sync.Save == nil {
+		t.Error("Save should be set")
+	}
+}
+
+func TestCreateServerCapabilities_DiagnosticProvider(t *testing.T) {
+	handler := &Handler_317{
+		TextDocumentDiagnostic: RequestFunc[DocumentDiagnosticParams, DocumentDiagnosticReport](func(_ *glsp.Context, _ *DocumentDiagnosticParams) (DocumentDiagnosticReport, error) {
+			return DocumentDiagnosticReport{}, nil
+		}),
+	}
+
+	caps := CreateServerCapabilities(handler)
+	if caps.DiagnosticProvider == nil {
+		t.Fatal("DiagnosticProvider should be set")
+	}
+	options, ok := caps.DiagnosticProvider.Value.(DiagnosticOptions)
+	if !ok {
+		t.Fatalf("DiagnosticProvider should wrap DiagnosticOptions, got %T", caps.DiagnosticProvider.Value)
+	}
+	if !options.InterFileDependencies {
+		t.Error("DiagnosticProvider should set InterFileDependencies")
+	}
+}
+
+func TestCreateServerCapabilities_SemanticTokensDelta(t *testing.T) {
+	handler := &Handler_316{
+		TextDocumentSemanticTokensFull:      RequestFunc[SemanticTokensParams, SemanticTokens](func(_ *glsp.Context, _ *SemanticTokensParams) (SemanticTokens, error) { return SemanticTokens{}, nil }),
+		TextDocumentSemanticTokensFullDelta: RequestFunc[SemanticTokensDeltaParams, any](func(_ *glsp.Context, _ *SemanticTokensDeltaParams) (any, error) { return nil, nil }),
+		TextDocumentSemanticTokensRange: RequestFunc[SemanticTokensRangeParams, SemanticTokens](func(_ *glsp.Context, _ *SemanticTokensRangeParams) (SemanticTokens, error) {
+			return SemanticTokens{}, nil
+		}),
+	}
+
+	caps := CreateServerCapabilities(handler)
+	options, ok := caps.SemanticTokensProvider.(*SemanticTokensOptions)
+	if !ok {
+		t.Fatalf("SemanticTokensProvider should be *SemanticTokensOptions, got %T", caps.SemanticTokensProvider)
+	}
+	if options.Full == nil {
+		t.Fatal("SemanticTokensProvider.Full should be set")
+	}
+	delta, ok := options.Full.Value.(SemanticTokensFullDelta)
+	if !ok {
+		t.Fatalf("SemanticTokensProvider.Full should wrap SemanticTokensFullDelta, got %T", options.Full.Value)
+	}
+	if !delta.Delta {
+		t.Error("SemanticTokensProvider.Full delta should be true")
+	}
+	if options.Range == nil || options.Range.Value != true {
+		t.Errorf("SemanticTokensProvider.Range should be true, got %#v", options.Range)
+	}
+}

@@ -3,53 +3,45 @@ package protocol
 
 import (
 	"fmt"
-	"sync"
 
 	"github.com/tliron/glsp"
 	"github.com/tliron/glsp/protocol/translation"
 )
 
-var customMethods = make(map[string]glsp.HandlerInterface)
-var mu sync.RWMutex
-
 type CustomMethodProvider interface {
 	GetCustomMethods() map[string]glsp.HandlerInterface
+	AddCustomMethod(method string, handler glsp.HandlerInterface) error
 }
 
-func (h *Handler_316) GetCustomMethods() map[string]glsp.HandlerInterface {
-	mu.RLock()
-	defer mu.RUnlock()
-	return customMethods
+func (h *common_handler) GetCustomMethods() map[string]glsp.HandlerInterface {
+	h.lock.Lock()
+	defer h.lock.Unlock()
+
+	methods := make(map[string]glsp.HandlerInterface, len(h.customMethods))
+	for method, handler := range h.customMethods {
+		methods[method] = handler
+	}
+	return methods
 }
 
-func (h *Handler_317) GetCustomMethods() map[string]glsp.HandlerInterface {
-	mu.RLock()
-	defer mu.RUnlock()
-	return customMethods
-}
+func (h *common_handler) AddCustomMethod(method string, handler glsp.HandlerInterface) error {
+	h.lock.Lock()
+	defer h.lock.Unlock()
 
-func (h *Handler_318) GetCustomMethods() map[string]glsp.HandlerInterface {
-	mu.RLock()
-	defer mu.RUnlock()
-	return customMethods
-}
-
-func AddCustomRequest[P any, R any](method string, handler RequestFunc[P, R]) error {
-	mu.Lock()
-	defer mu.Unlock()
-	if _, exists := customMethods[method]; exists {
+	if h.customMethods == nil {
+		h.customMethods = make(map[string]glsp.HandlerInterface)
+	}
+	if _, exists := h.customMethods[method]; exists {
 		return fmt.Errorf("method %q already registered", method)
 	}
-	customMethods[method] = translation.NewTypedHandler(handler)
+	h.customMethods[method] = handler
 	return nil
 }
 
-func AddCustomNotification[P any](method string, handler NotificationFunc[P]) error {
-	mu.Lock()
-	defer mu.Unlock()
-	if _, exists := customMethods[method]; exists {
-		return fmt.Errorf("method %q already registered", method)
-	}
-	customMethods[method] = translation.NewNotificationHandler(handler)
-	return nil
+func AddCustomRequest[P any, R any](provider CustomMethodProvider, method string, handler RequestFunc[P, R]) error {
+	return provider.AddCustomMethod(method, translation.NewTypedHandler(handler))
+}
+
+func AddCustomNotification[P any](provider CustomMethodProvider, method string, handler NotificationFunc[P]) error {
+	return provider.AddCustomMethod(method, translation.NewNotificationHandler(handler))
 }

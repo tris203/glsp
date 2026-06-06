@@ -8,9 +8,10 @@ import (
 )
 
 type common_handler struct {
-	initialized bool
-	lock        sync.Mutex
-	handlerMap  map[LSPMethod]glsp.HandlerInterface
+	initialized   bool
+	lock          sync.Mutex
+	handlerMap    map[LSPMethod]glsp.HandlerInterface
+	customMethods map[string]glsp.HandlerInterface
 }
 
 type RequestFunc[P any, R any] func(context *glsp.Context, params *P) (R, error)

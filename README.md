@@ -31,7 +31,6 @@ Projects using GLSP:
 package main
 
 import (
-	"fmt"
 	"log/slog"
 
 	"github.com/tliron/glsp"
@@ -44,6 +43,7 @@ const lsName = "my language"
 var (
 	version string = "0.0.1"
 	handler protocol.Handler_316
+	logger  = slog.Default()
 )
 
 func main() {
@@ -54,10 +54,9 @@ func main() {
 		SetTrace:    setTrace,
 	}
 
-	protocol.AddCustomRequest("test/test", TestHandler)
-	protocol.AddCustomNotification("test/noti", TestNotificationHandler)
+	protocol.AddCustomRequest(&handler, "test/test", TestHandler)
+	protocol.AddCustomNotification(&handler, "test/noti", TestNotificationHandler)
 
-	logger := slog.Default()
 	server := server.NewServer(&handler, logger, false)
 
 	server.RunStdio()
@@ -93,13 +92,12 @@ type TestResult struct {
 }
 
 func TestHandler(context *glsp.Context, params *TestParams) (TestResult, error) {
-	fmt.Printf("Parameters: %v\n", params.From_Client)
+	logger.Info("custom request", "method", context.Method, "from_client", params.From_Client)
 	return TestResult{From_Server: "Hello From Server"}, nil
 }
 
 func TestNotificationHandler(context *glsp.Context, params *TestParams) error {
-	fmt.Println("Test Notification Handler")
-	fmt.Printf("Parameters: %v\n", params.From_Client)
+	logger.Info("custom notification", "method", context.Method, "from_client", params.From_Client)
 	return nil
 }
 

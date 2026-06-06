@@ -8,6 +8,8 @@ import (
 
 type TranslationFunc[P, R any] func(*glsp.Context, *P) (R, error)
 
+type ContextOnlyFunc func(*glsp.Context) error
+
 // Implement the HandlerInterface
 func (h TranslationFunc[P, R]) Handle(ctx *glsp.Context, params []byte) (any, error) {
 	var p P
@@ -43,9 +45,11 @@ func NewContextOnlyHandler(fn func(*glsp.Context) error) glsp.HandlerInterface {
 	if fn == nil {
 		return nil
 	}
-	return TranslationFunc[struct{}, struct{}](func(ctx *glsp.Context, _ *struct{}) (struct{}, error) {
-		return struct{}{}, fn(ctx)
-	})
+	return ContextOnlyFunc(fn)
+}
+
+func (h ContextOnlyFunc) Handle(ctx *glsp.Context, _ []byte) (any, error) {
+	return nil, h(ctx)
 }
 
 // Factory function for handlers with specific return types - converts to any

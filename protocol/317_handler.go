@@ -45,7 +45,7 @@ type Handler_317 struct {
 	CodeLensResolve                     RequestFunc[CodeLens, CodeLens]
 	CompletionItemResolve               RequestFunc[CompletionItem, CompletionItem]
 	DocumentLinkResolve                 RequestFunc[DocumentLink, DocumentLink]
-	TextDocumentCodeAction              RequestFunc[CodeAction, []CodeAction]
+	TextDocumentCodeAction              RequestFunc[CodeActionParams, []CodeAction]
 	TextDocumentCodeLens                RequestFunc[CodeLensParams, []CodeLens]
 	TextDocumentDocumentColor           RequestFunc[DocumentColorParams, []ColorInformation]
 	TextDocumentColorPresentation       RequestFunc[ColorPresentationParams, []ColorPresentation]
