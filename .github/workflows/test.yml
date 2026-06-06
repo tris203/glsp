@@ -41,7 +41,7 @@ jobs:
       run: go vet ./...
 
     - name: Run tests
-      run: go test -race
+      run: go test -race ./...
 
   lint:
     runs-on: ubuntu-latest
