@@ -1,15 +1,14 @@
 package server
 
 import (
+	"fmt"
 	"net/http"
 	"sync/atomic"
 
 	"github.com/gorilla/websocket"
-	"github.com/pkg/errors"
-	"github.com/tliron/commonlog"
 )
 
-func (self *Server) RunWebSocket(address string) error {
+func (s *Server) RunWebSocket(address string) error {
 	mux := http.NewServeMux()
 	upgrader := websocket.Upgrader{CheckOrigin: func(request *http.Request) bool { return true }}
 
@@ -18,28 +17,33 @@ func (self *Server) RunWebSocket(address string) error {
 	mux.HandleFunc("/", func(writer http.ResponseWriter, request *http.Request) {
 		connection, err := upgrader.Upgrade(writer, request, nil)
 		if err != nil {
-			self.Log.Warningf("error upgrading HTTP to web socket: %s", err.Error())
-			http.Error(writer, errors.Wrap(err, "could not upgrade to web socket").Error(), http.StatusBadRequest)
+			s.Log.Warn("error upgrading HTTP to web socket", "error", err)
+			http.Error(writer, fmt.Errorf("could not upgrade to web socket: %w", err).Error(), http.StatusBadRequest)
 			return
 		}
 
-		log := commonlog.NewKeyValueLogger(self.Log, "id", atomic.AddUint64(&connectionCount, 1))
-		defer commonlog.CallAndLogError(connection.Close, "connection.Close", log)
-		self.ServeWebSocket(connection, log)
+		log := s.Log.With("id", atomic.AddUint64(&connectionCount, 1))
+		defer func() {
+			err := connection.Close()
+			if err != nil {
+				log.Error("error closing web socket connection", "error", err.Error())
+			}
+		}()
+		s.ServeWebSocket(connection, log)
 	})
 
-	listener, err := self.newNetworkListener("tcp", address)
+	listener, err := s.newNetworkListener("tcp", address)
 	if err != nil {
 		return err
 	}
 
 	server := http.Server{
-		Handler:      http.TimeoutHandler(mux, self.Timeout, ""),
-		ReadTimeout:  self.ReadTimeout,
-		WriteTimeout: self.WriteTimeout,
+		Handler:      http.TimeoutHandler(mux, s.Timeout, ""),
+		ReadTimeout:  s.ReadTimeout,
+		WriteTimeout: s.WriteTimeout,
 	}
 
-	self.Log.Notice("listening for web socket connections", "address", address)
+	s.Log.Info("listening for web socket connections", "address", address)
 	err = server.Serve(*listener)
-	return errors.Wrap(err, "WebSocket")
+	return fmt.Errorf("web socket server stopped: %w", err)
 }

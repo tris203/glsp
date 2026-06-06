@@ -1,9 +1,9 @@
 package server
 
 import (
+	"log/slog"
 	"time"
 
-	"github.com/tliron/commonlog"
 	"github.com/tliron/glsp"
 )
 
@@ -14,11 +14,10 @@ var DefaultTimeout = time.Minute
 //
 
 type Server struct {
-	Handler     glsp.Handler
-	LogBaseName string
-	Debug       bool
+	Handler glsp.RPCHandler
+	Debug   bool
 
-	Log              commonlog.Logger
+	Log              *slog.Logger
 	Timeout          time.Duration
 	ReadTimeout      time.Duration
 	WriteTimeout     time.Duration
@@ -26,12 +25,11 @@ type Server struct {
 	WebSocketTimeout time.Duration
 }
 
-func NewServer(handler glsp.Handler, logName string, debug bool) *Server {
+func NewServer(handler glsp.RPCHandler, logger *slog.Logger, debug bool) *Server {
 	return &Server{
 		Handler:          handler,
-		LogBaseName:      logName,
 		Debug:            debug,
-		Log:              commonlog.GetLogger(logName),
+		Log:              logger,
 		Timeout:          DefaultTimeout,
 		ReadTimeout:      DefaultTimeout,
 		WriteTimeout:     DefaultTimeout,
